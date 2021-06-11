@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+from tensorflow import keras
+
 from keras import metrics
 from keras import Model
 from keras import models
