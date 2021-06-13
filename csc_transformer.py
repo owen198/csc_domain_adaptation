@@ -31,7 +31,7 @@ from keras.callbacks import EarlyStopping
 import kerastuner as kt
 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
@@ -258,6 +258,11 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
+
+
+
+### Detecting synthetic data by target model
+
 model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
 model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
 model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(synthetic_pd)
@@ -341,3 +346,56 @@ plot_score (source_score_cv,
 plot_score (synthetic_score, 
             synthetic_date, 
             'Detect synthetic conditions by using '+ tag_dict['target'] +' model, RMSE='+ "{:.3f}".format(sy_rmse))
+
+
+### Detecting target domain by synthetic model
+
+target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
+                                            source_normalizer,
+                                            model_source)
+
+target_score, target_date = get_score(globals()[tag_dict['target']], 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
+                                            source_normalizer,
+                                            model_target)
+
+target_score_da, target_date_da = get_score(globals()[tag_dict['target']], 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
+                                            source_normalizer,
+                                            model_synthetic)
+
+da_rmse = mean_squared_error(target_score_da, target_score, squared=False)
+cv_rmse = mean_squared_error(target_score_cv, target_score, squared=False)
+
+plot_score (target_score, 
+            target_date, 
+            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['target'] +' model')
+
+plot_score (target_score_cv, 
+            target_date_cv, 
+            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['source'] +' model, RMSE='+ "{:.3f}".format(cv_rmse))
+
+plot_score (target_score_da, 
+            target_date_da, 
+            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['source'] +' synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
+
+feature_index = 206
+duration = 26000
+interval = 100
+fig, ax = plt.subplots(figsize=(10,5))
+
+ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.')
+ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.')
+ax.plot(range(duration, duration+interval), synthetic_pd[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
+
+ax.legend()
+ax.grid(True)
+plt.tight_layout()
+
+plt.savefig(filename + '-' +'realdata.png', dpi=300)
+plt.show()
+
