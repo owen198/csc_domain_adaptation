@@ -31,9 +31,9 @@ from keras.callbacks import EarlyStopping
 import kerastuner as kt
 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
+tensorflow.config.experimental.set_memory_growth(gpu_devices[1], True)
 gpus = tensorflow.test.gpu_device_name()
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 2 4 128 64
@@ -57,6 +57,13 @@ path = '/data/'
 # W4662FM0605
 # W4662FM0606
 
+
+tag_pd = pd.read_csv('csc_w4.csv')
+
+
+
+
+
 tag_dict = {'source':sys.argv[1],
             'source_training_from': datetime.datetime(2020,3,1,0,0),
             'source_training_to': datetime.datetime(2020,4,1,0,0),
@@ -67,12 +74,18 @@ tag_dict = {'source':sys.argv[1],
             'target_training_to': datetime.datetime(2021,1,1,0,0), 
             'target_end': datetime.datetime(2021,2,1,0,0)}
 
+globals()[tag_dict['target']] = pd.DataFrame()
+for file_list in tag_pd[tag_pd['tag']==tag_dict['target']]['data'].to_list():
+    globals()[tag_dict['target']] = globals()[tag_dict['target']].append(pd.read_csv(path + file_list))
+
+'''
 globals()[tag_dict['target']] = pd.concat([pd.read_csv(path + tag_dict['target'] + '_202009.csv'),
                                           pd.read_csv(path + tag_dict['target'] + '_202010.csv'),
                                           pd.read_csv(path + tag_dict['target'] + '_202011.csv'),
                                           pd.read_csv(path + tag_dict['target'] + '_202012.csv'),
                                           pd.read_csv(path + tag_dict['target'] + '_202101.csv'),
                                           pd.read_csv(path + tag_dict['target'] + '_202102.csv')])
+'''
 
 globals()[tag_dict['source']] = pd.concat([pd.read_csv(path + tag_dict['source'] + '_202003.csv'),
                                           pd.read_csv(path + tag_dict['source'] + '_202004.csv'),
