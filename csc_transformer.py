@@ -324,7 +324,7 @@ source_test_np, _ = temporalize(X = source_test_pd.values,
 source_test_np = np.array(source_test_np)
 source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
 
-synthetic_source = model.predict(x={'source': source_test_np, 'target': X}, verbose=0)
+synthetic_source = model.predict(source_test_np, verbose=0)
 synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
 for elements in drop_list:
