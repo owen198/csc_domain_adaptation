@@ -308,33 +308,29 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def transformer(data):
-    source_test_pd = pd.DataFrame()
-    source_test_pd = data
-    source_test_pd = source_test_pd.drop(columns=drop_list)
 
-    index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
+source_test_pd = pd.DataFrame()
+source_test_pd = data
+source_test_pd = source_test_pd.drop(columns=drop_list)
 
-    source_test_pd = pd.DataFrame(target_normalizer.transform(source_test_pd)).iloc[index_2]
+index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
 
-    source_test_np, _ = temporalize(X = source_test_pd.values, 
-                                    y = np.zeros(source_test_pd.shape[0]), 
-                                    lookback = timesteps)
+source_test_pd = pd.DataFrame(target_normalizer.transform(source_test_pd)).iloc[index_2]
 
-    source_test_np = np.array(source_test_np)
-    source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
+source_test_np, _ = temporalize(X = source_test_pd.values, 
+                                y = np.zeros(source_test_pd.shape[0]), 
+                                lookback = timesteps)
 
-    synthetic_source = model.predict(x={'source': source_test_np, 'target': X}, verbose=0)
-    synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
+source_test_np = np.array(source_test_np)
+source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
 
-    for elements in drop_list:
-        synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
+synthetic_source = model.predict(x={'source': source_test_np, 'target': X}, verbose=0)
+synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
-    return synthetic_source_pd
+for elements in drop_list:
+    synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
 
-### Detecting synthetic data by target model
 
-synthetic_source_pd = transformer(globals()[tag_dict['source']])
 
 model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
 model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
