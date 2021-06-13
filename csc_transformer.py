@@ -327,15 +327,13 @@ source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_fe
 synthetic_source = model.predict(source_test_np, verbose=0)
 synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
-for elements in drop_list:
-    synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
-
-
 
 model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
 model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
 model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(synthetic_source_pd)
 
+for elements in drop_list:
+    synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
 
 def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
