@@ -401,19 +401,19 @@ plot_score (synthetic_score,
 target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_source)
 
 target_score, target_date = get_score(globals()[tag_dict['target']], 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_target)
 
 target_score_da, target_date_da = get_score(globals()[tag_dict['target']], 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_synthetic)
 
 da_rmse = mean_squared_error(target_score_da, target_score, squared=False)
