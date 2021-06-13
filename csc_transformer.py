@@ -276,7 +276,7 @@ def plot_score (score_list, date_list, tag):
     plt.ylim(0, 100)
     plt.tight_layout()
 
-    print(filename+'-'+tag+'.png')
+    print(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png')
     fig.savefig(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png', dpi=300)
     plt.show()
 
