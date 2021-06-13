@@ -9,6 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import sys
 
 from tensorflow import keras
 
@@ -35,6 +36,9 @@ gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
 
+
+epoch = sys.argv[0]
+print('epoch=', epoch)
 
 timesteps = 128
 n_features = 390
