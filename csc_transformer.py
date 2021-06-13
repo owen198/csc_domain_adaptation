@@ -310,8 +310,8 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
 
 def transformer(data):
     source_test_pd = pd.DataFrame()
-    source_test_pd = globals()[tag_dict['source']]
     source_test_pd = data
+    source_test_pd = source_test_pd.drop(columns=drop_list)
 
     index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
 
