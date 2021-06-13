@@ -242,7 +242,7 @@ if retrain:
 
     ax.plot(lstm_ae_model.history['loss'], marker='.', label='loss')
     ax.plot(lstm_ae_model.history['val_loss'], marker='.', label='validation loss')
-    ax.plot(lstm_ae_model.history['transformation_loss'], marker='.', label='transformation loss')
+    #ax.plot(lstm_ae_model.history['transformation_loss'], marker='.', label='transformation loss')
 
     ax.legend()
     ax.grid(True)
