@@ -347,20 +347,20 @@ source_score, source_date = get_score(globals()[tag_dict['source']],
                                             source_normalizer,
                                             model_source)
 
-sy_rmse = 0
-cv_rmse = 0
+sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
+cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
 
 plot_score (source_score, 
             source_date, 
-            'Detect ' + tag_dict['source'] +' conditions by using '+ tag_dict['source'] +' model')
+            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ tag_dict['source'] +' (source)model')
 
 plot_score (source_score_cv, 
             source_date_cv, 
-            'Detect ' + tag_dict['source'] +' conditions by using '+ tag_dict['target'] +' model, RMSE='+ "{:.3f}".format(cv_rmse))
+            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ tag_dict['target'] +' (target)model, RMSE='+ "{:.3f}".format(cv_rmse))
 
 plot_score (synthetic_score, 
             synthetic_date, 
-            'Detect synthetic conditions by using '+ tag_dict['target'] +' model, RMSE='+ "{:.3f}".format(sy_rmse))
+            'Detect synthetic conditions by using '+ tag_dict['target'] +' (target)model, RMSE='+ "{:.3f}".format(sy_rmse))
 
 
 ### Detecting target domain by synthetic model
@@ -388,15 +388,15 @@ cv_rmse = mean_squared_error(target_score_cv, target_score, squared=False)
 
 plot_score (target_score, 
             target_date, 
-            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['target'] +' model')
+            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['target'] +' (target)model')
 
 plot_score (target_score_cv, 
             target_date_cv, 
-            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['source'] +' model, RMSE='+ "{:.3f}".format(cv_rmse))
+            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(cv_rmse))
 
 plot_score (target_score_da, 
             target_date_da, 
-            'Detect ' + tag_dict['target'] +' conditions by using '+ tag_dict['source'] +' synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
+            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
 
 feature_index = 206
 duration = 26000
