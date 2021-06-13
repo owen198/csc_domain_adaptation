@@ -45,8 +45,9 @@ timesteps = int(sys.argv[4])
 units_layer_1 = int(sys.argv[5])
 units_layer_2 = int(sys.argv[6])
 
-print('filename=', sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
-                    str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2))
+filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
+                    str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
+
 
 
 n_features = 390
@@ -142,7 +143,6 @@ Y = np.array(Y)
 Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
 model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
-model_name
 
 if retrain:
 
@@ -225,7 +225,7 @@ def plot_score (score_list, date_list, tag):
     ax.grid()
     plt.ylim(0, 100)
     plt.tight_layout()
-    #fig.savefig(path+tag+'-'+training_from.strftime("%Y%m%d")+'-'+training_to.strftime("%Y%m%d")+'.png', dpi=300)
+    fig.savefig(filename+tag+'.png', dpi=300)
     plt.show()
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
@@ -327,6 +327,7 @@ source_score, source_date = get_score(globals()[tag_dict['source']],
 
 sy_rmse = 0
 cv_rmse = 0
+
 plot_score (source_score, 
             source_date, 
             'Detect ' + tag_dict['source'] +' conditions by using '+ tag_dict['source'] +' model')
