@@ -315,7 +315,7 @@ source_test_pd = source_test_pd.drop(columns=drop_list)
 
 index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
 
-source_test_pd = pd.DataFrame(target_normalizer.transform(source_test_pd)).iloc[index_2]
+source_test_pd = pd.DataFrame(source_normalizer.transform(source_test_pd)).iloc[index_2]
 
 source_test_np, _ = temporalize(X = source_test_pd.values, 
                                 y = np.zeros(source_test_pd.shape[0]), 
@@ -376,7 +376,8 @@ source_score, source_date = get_score(globals()[tag_dict['source']],
                                             source_normalizer,
                                             model_source)
 
-sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
+#sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
+sy_rmse = 0
 cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
 
 plot_score (source_score, 
@@ -437,7 +438,7 @@ fig, ax = plt.subplots(figsize=(10,5))
 
 ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.')
 ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.')
-ax.plot(range(duration, duration+interval), synthetic_pd[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
+ax.plot(range(duration, duration+interval), synthetic_source_pd[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
 
 ax.legend()
 ax.grid(True)
