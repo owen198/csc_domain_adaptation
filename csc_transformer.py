@@ -125,7 +125,7 @@ normalizer = preprocessing.MinMaxScaler()
 target_normalizer = normalizer.fit(globals()[tag_dict['target']+'_training'])
 
 X_source = pd.DataFrame(source_normalizer.transform(globals()[tag_dict['source']+'_training']))
-X_target = pd.DataFrame(source_normalizer.transform(globals()[tag_dict['target']+'_training']))
+X_target = pd.DataFrame(target_normalizer.transform(globals()[tag_dict['target']+'_training']))
 
 def temporalize(X, y, lookback):
     output_X = []
