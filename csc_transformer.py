@@ -52,6 +52,7 @@ filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
 
 
 if os.path.isfile(filename + '-' +'realdata.png'):
+    print(filename + '-' +'realdata.png' + ' exists, exit')
     exit()
 
 
