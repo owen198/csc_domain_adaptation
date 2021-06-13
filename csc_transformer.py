@@ -38,6 +38,8 @@ gpus = tensorflow.test.gpu_device_name()
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 2 4 128 64
 
+print(sys.argv)
+
 source = sys.argv[1]
 target = sys.argv[2]
 epoch = int(sys.argv[3])
@@ -380,7 +382,8 @@ source_score, source_date = get_score(globals()[tag_dict['source']],
                                             model_source)
 
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
-sy_rmse = 0
+N=len(synthetic_score)
+sy_rmse = mean_squared_error(synthetic_score, source_score[-N:], squared=False)
 cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
 
 plot_score (source_score, 
