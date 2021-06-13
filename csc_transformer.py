@@ -32,7 +32,7 @@ import tensorflow
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
+tensorflow.config.experimental.set_memory_growth(gpu_devices[1], True)
 gpus = tensorflow.test.gpu_device_name()
 
 
