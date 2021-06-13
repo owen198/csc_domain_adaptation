@@ -54,9 +54,6 @@ n_features = 390
 retrain = True
 path = '/data/'
 
-# W4662FM0605
-# W4662FM0606
-
 
 tag_pd = pd.read_csv('csc_w4.csv')
 
@@ -157,8 +154,38 @@ X = X.reshape(X.shape[0], timesteps, n_features)
 Y = np.array(Y)
 Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
+
+### Model construction
+
 model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
 
+def lstm_ae():
+    # define model
+    model = Sequential(name='test')
+    model.add(LSTM(units_layer_1, activation='relu', input_shape=(timesteps,n_features), return_sequences=True))
+    model.add(LSTM(units_layer_2, activation='relu', return_sequences=False))
+    model.add(RepeatVector(timesteps))
+    model.add(LSTM(units_layer_2, activation='relu', return_sequences=True))
+    model.add(LSTM(units_layer_1, activation='relu', return_sequences=True))
+    model.add(TimeDistributed(Dense(n_features)))
+    model.compile(optimizer='adam', loss='mse', metrics=[metrics.RootMeanSquaredError()])
+    model.summary()
+
+    return model
+
+
+if retrain:
+    early_stopping = EarlyStopping(monitor='val_loss', patience=150, verbose=2)
+
+    model = lstm_ae ()
+    lstm_ae_model = model.fit(x=Y, 
+                              y=X, 
+                              epochs=epoch, batch_size=16, verbose=1, validation_split=0.2, callbacks=[early_stopping])
+    model.save(model_name)
+else:
+    model = models.load_model(model_name)
+
+'''
 if retrain:
 
     encoder = Sequential(
@@ -208,6 +235,7 @@ if retrain:
 
 else:
     model = models.load_model(model_name)  
+'''
 
 if retrain:
     fig, ax = plt.subplots(figsize=(10,5))
@@ -224,8 +252,15 @@ if retrain:
     plt.savefig(filename+'-'+'epoches.png', dpi=300)
     plt.show()
 
-synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
-synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_data])
+#synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
+#synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_data])
+
+
+
+
+## Validation
+
+### Initializing the validation
 
 def scorer_(Y_pred):
     a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
@@ -299,9 +334,6 @@ source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_fe
 
 synthetic_source = model.predict(x={'source': source_test_np, 'target': X}, verbose=0)
 synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
-
-#diff = globals()[tag_dict['source']].shape[0] - synthetic_source_pd.shape[0]
-#len = globals()[tag_dict['source']].shape[0] - diff
 
 for elements in drop_list:
     synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
@@ -397,6 +429,9 @@ plot_score (target_score_cv,
 plot_score (target_score_da, 
             target_date_da, 
             'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
+
+
+### show the difference between real data and synthetic data
 
 feature_index = 206
 duration = 26000
