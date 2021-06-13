@@ -104,7 +104,7 @@ globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']][
 
 globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']][
                                                   (globals()[tag_dict['target']]['datetime'] > tag_dict['target_training_from']) &
-                                                  (globals()[tag_dict['target']]['datetime'] <= tag_dict['target_end']) ]
+                                                  (globals()[tag_dict['target']]['datetime'] <= tag_dict['target_training_to']) ]
 
 drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
@@ -429,7 +429,7 @@ plot_score (target_score_cv,
 
 plot_score (target_score_da, 
             target_date_da, 
-            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
+            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
 
 
 ### show the difference between real data and synthetic data
