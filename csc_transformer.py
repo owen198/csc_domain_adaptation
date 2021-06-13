@@ -51,6 +51,9 @@ filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
+if os.path.isfile(filename + '-' +'realdata.png'):
+    exit()
+
 
 n_features = 390
 retrain = True
