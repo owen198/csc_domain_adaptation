@@ -61,37 +61,39 @@ path = '/data/'
 tag_pd = pd.read_csv('csc_w4.csv')
 
 
+source_training_from_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].head(1).values[0].split('_')[1].split('.')[0][4:6])
+source_training_from_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].head(1).values[0].split('_')[1].split('.')[0][0:4])
+source_training_to_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(2).values[0].split('_')[1].split('.')[0][4:6])
+source_training_to_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(2).values[0].split('_')[1].split('.')[0][0:4])
+source_end_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(1).values[0].split('_')[1].split('.')[0][4:6])
+source_end_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(1).values[0].split('_')[1].split('.')[0][0:4])
 
-
+target_training_from_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].head(1).values[0].split('_')[1].split('.')[0][4:6])
+target_training_from_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].head(1).values[0].split('_')[1].split('.')[0][0:4])
+target_training_to_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(2).values[0].split('_')[1].split('.')[0][4:6])
+target_training_to_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(2).values[0].split('_')[1].split('.')[0][0:4])
+target_end_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(1).values[0].split('_')[1].split('.')[0][4:6])
+target_end_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(1).values[0].split('_')[1].split('.')[0][0:4])
 
 tag_dict = {'source':sys.argv[1],
-            'source_training_from': datetime.datetime(2020,3,1,0,0),
-            'source_training_to': datetime.datetime(2020,4,1,0,0),
-            'source_end': datetime.datetime(2020,7,1,0,0),
+            'source_training_from': datetime.datetime(source_training_from_year,source_training_from_month,1,0,0),
+            'source_training_to': datetime.datetime(source_training_to_year,source_training_to_month,1,0,0),
+            'source_end': datetime.datetime(source_end_year,source_end_month,1,0,0),
             
             'target':sys.argv[2],
-            'target_training_from': datetime.datetime(2020,9,1,0,0), 
-            'target_training_to': datetime.datetime(2021,1,1,0,0), 
-            'target_end': datetime.datetime(2021,2,1,0,0)}
+            'target_training_from': datetime.datetime(target_training_from_year,target_training_from_month,1,0,0), 
+            'target_training_to': datetime.datetime(target_training_to_year,target_training_to_month,1,0,0), 
+            'target_end': datetime.datetime(target_end_year,target_end_month,1,0,0)}
 
 globals()[tag_dict['target']] = pd.DataFrame()
 for file_list in tag_pd[tag_pd['tag']==tag_dict['target']]['data'].to_list():
     globals()[tag_dict['target']] = globals()[tag_dict['target']].append(pd.read_csv(path + file_list))
 
-'''
-globals()[tag_dict['target']] = pd.concat([pd.read_csv(path + tag_dict['target'] + '_202009.csv'),
-                                          pd.read_csv(path + tag_dict['target'] + '_202010.csv'),
-                                          pd.read_csv(path + tag_dict['target'] + '_202011.csv'),
-                                          pd.read_csv(path + tag_dict['target'] + '_202012.csv'),
-                                          pd.read_csv(path + tag_dict['target'] + '_202101.csv'),
-                                          pd.read_csv(path + tag_dict['target'] + '_202102.csv')])
-'''
+globals()[tag_dict['source']] = pd.DataFrame()
+for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
+    globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
 
-globals()[tag_dict['source']] = pd.concat([pd.read_csv(path + tag_dict['source'] + '_202003.csv'),
-                                          pd.read_csv(path + tag_dict['source'] + '_202004.csv'),
-                                          pd.read_csv(path + tag_dict['source'] + '_202005.csv'),
-                                          pd.read_csv(path + tag_dict['source'] + '_202006.csv'),
-                                          pd.read_csv(path + tag_dict['source'] + '_202007.csv')])
+print('file length:', globals()[tag_dict['source']].shape, globals()[tag_dict['target']].shape)
 
 globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
 globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
