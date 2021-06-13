@@ -225,7 +225,7 @@ def plot_score (score_list, date_list, tag):
     ax.grid()
     plt.ylim(0, 100)
     plt.tight_layout()
-    fig.savefig(filename+tag+'.png', dpi=300)
+    fig.savefig(filename+'-'+tag+'.png', dpi=300)
     plt.show()
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
