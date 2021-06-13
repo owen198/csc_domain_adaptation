@@ -91,6 +91,7 @@ for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
     globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
 
 print('file length:', globals()[tag_dict['source']].shape, globals()[tag_dict['target']].shape)
+print(tag_dict)
 
 globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
 globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
