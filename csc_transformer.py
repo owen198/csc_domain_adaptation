@@ -41,7 +41,7 @@ timesteps = 128
 n_features = 390
 epoch = 10
 retrain = True
-path = '../data/W4/'
+path = '/data/'
 
 tag_dict = {'source':'W4662FM0605',
             'source_training_from': datetime.datetime(2020,3,1,0,0),
