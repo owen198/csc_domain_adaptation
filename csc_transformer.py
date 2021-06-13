@@ -58,19 +58,21 @@ path = '/data/'
 tag_pd = pd.read_csv('csc_w4.csv')
 
 
-source_training_from_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].head(1).values[0].split('_')[1].split('.')[0][4:6])
-source_training_from_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].head(1).values[0].split('_')[1].split('.')[0][0:4])
-source_training_to_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(2).values[0].split('_')[1].split('.')[0][4:6])
-source_training_to_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(2).values[0].split('_')[1].split('.')[0][0:4])
-source_end_month = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(1).values[0].split('_')[1].split('.')[0][4:6])
-source_end_year = int(tag_pd[tag_pd['tag']==sys.argv[1]]['data'].tail(1).values[0].split('_')[1].split('.')[0][0:4])
+source_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+source_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+source_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+source_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+source_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+source_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
 
-target_training_from_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].head(1).values[0].split('_')[1].split('.')[0][4:6])
-target_training_from_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].head(1).values[0].split('_')[1].split('.')[0][0:4])
-target_training_to_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(2).values[0].split('_')[1].split('.')[0][4:6])
-target_training_to_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(2).values[0].split('_')[1].split('.')[0][0:4])
-target_end_month = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(1).values[0].split('_')[1].split('.')[0][4:6])
-target_end_year = int(tag_pd[tag_pd['tag']==sys.argv[2]]['data'].tail(1).values[0].split('_')[1].split('.')[0][0:4])
+target_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+target_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+target_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+target_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+target_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+target_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+
+
 
 tag_dict = {'source':sys.argv[1],
             'source_training_from': datetime.datetime(source_training_from_year,source_training_from_month,1,0,0),
