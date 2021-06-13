@@ -332,10 +332,9 @@ def transformer(data):
 
     return synthetic_source_pd
 
-
 ### Detecting synthetic data by target model
 
-synthetic_source_pd = source_transformation(globals()[tag_dict['source']])
+synthetic_source_pd = transformer(globals()[tag_dict['source']])
 
 model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
 model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
