@@ -33,7 +33,7 @@ import kerastuner as kt
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpu_devices[1], True)
+tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 2 4 128 64
