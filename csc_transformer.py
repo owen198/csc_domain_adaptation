@@ -206,7 +206,7 @@ if retrain:
 
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.savefig('epoches.png', dpi=300)
+    plt.savefig(filename+'-'+'epoches.png', dpi=300)
     plt.show()
 
 synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
