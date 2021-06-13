@@ -3,13 +3,15 @@ from sklearn import svm
 from sklearn.metrics import mean_squared_error
 
 import pandas as pd
-import datetime
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import random
 import sys
+import os
+import tensorflow
+import datetime
 
 from tensorflow import keras
 
@@ -27,8 +29,6 @@ from keras.layers import Input, BatchNormalization, Activation
 from keras.callbacks import EarlyStopping
 
 import kerastuner as kt
-import os
-import tensorflow
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
@@ -37,21 +37,29 @@ tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
 
 
-epoch = sys.argv[0]
-print('epoch=', epoch)
+source = sys.argv[1]
+target = sys.argv[2]
+epoch = int(sys.argv[3])
+timesteps = int(sys.argv[4])
+units_layer_1 = int(sys.argv[5])
+units_layer_2 = int(sys.argv[6])
 
-timesteps = 128
+print('filename=', sys.argv[1]+'_'+target+'_'+epoch+'_'+timesteps+'_'+units_layer_1+'_'+units_layer_2)
+
+
 n_features = 390
-epoch = 10
 retrain = True
 path = '/data/'
 
-tag_dict = {'source':'W4662FM0605',
+# W4662FM0605
+# W4662FM0606
+
+tag_dict = {'source':sys.argv[1],
             'source_training_from': datetime.datetime(2020,3,1,0,0),
             'source_training_to': datetime.datetime(2020,4,1,0,0),
             'source_end': datetime.datetime(2020,7,1,0,0),
             
-            'target':'W4662FM0606',
+            'target':sys.argv[2],
             'target_training_from': datetime.datetime(2020,9,1,0,0), 
             'target_training_to': datetime.datetime(2021,1,1,0,0), 
             'target_end': datetime.datetime(2021,2,1,0,0)}
@@ -138,9 +146,8 @@ if retrain:
 
     encoder = Sequential(
         [
-            LSTM(180, activation='tanh', return_sequences=True),
-            LSTM(128, activation='tanh', return_sequences=True),
-            LSTM(16, activation='tanh', return_sequences=False),
+            LSTM(units_layer_1, activation='tanh', return_sequences=True),
+            LSTM(units_layer_2, activation='tanh', return_sequences=False),
             RepeatVector(timesteps)
         ],
         name='encoder'
@@ -148,9 +155,8 @@ if retrain:
 
     decoder = Sequential(
         [
-            LSTM(16, activation='tanh', return_sequences=True),
-            LSTM(128, activation='tanh', return_sequences=True),
-            LSTM(780, activation='tanh', return_sequences=True),
+            LSTM(units_layer_2, activation='tanh', return_sequences=True),
+            LSTM(units_layer_1, activation='tanh', return_sequences=True),
             TimeDistributed(Dense(n_features))
         ],
         name='decoder'
