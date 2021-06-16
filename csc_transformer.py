@@ -50,7 +50,7 @@ filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
-if os.path.isfile(filename + '-' +'realdata.png'):
+if os.path.isfile('results/'filename + '-' +'realdata.png'):
     print(filename + '-' +'realdata.png' + ' exists, exit')
     exit()
 
@@ -257,7 +257,7 @@ if retrain:
 
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.savefig(filename+'-'+'epoches.png', dpi=300)
+    plt.savefig('results/'+filename+'-'+'epoches.png', dpi=300)
     plt.show()
 
 #synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
@@ -453,6 +453,6 @@ ax.legend()
 ax.grid(True)
 plt.tight_layout()
 
-plt.savefig(filename + '-' +'realdata.png', dpi=300)
+plt.savefig('results/'filename + '-' +'realdata.png', dpi=300)
 plt.show()
 
