@@ -318,7 +318,7 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
 
 
 source_test_pd = pd.DataFrame()
-source_test_pd = globals()[tag_dict['source']]
+source_test_pd = globals()[tag_dict['target']]
 source_test_pd = source_test_pd.drop(columns=drop_list)
 
 index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
@@ -341,7 +341,7 @@ model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
 model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(synthetic_source_pd)
 
 for elements in drop_list:
-    synthetic_source_pd[elements] = globals()[tag_dict['source']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
+    synthetic_source_pd[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(synthetic_source_pd.shape[0]).values
 
 def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
@@ -368,8 +368,8 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
     return score_list, date_list
 
 synthetic_score, synthetic_date = get_syntheic_score(synthetic_source_pd, 
-                                            tag_dict['source_training_from'], 
-                                            tag_dict['source_end'], 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
                                             model_target)
 
 source_score_cv, source_date_cv = get_score(globals()[tag_dict['source']], 
