@@ -453,6 +453,6 @@ ax.legend()
 ax.grid(True)
 plt.tight_layout()
 
-plt.savefig('results/'filename + '-' +'realdata.png', dpi=300)
+plt.savefig('results/'+filename + '-' +'realdata.png', dpi=300)
 plt.show()
 
