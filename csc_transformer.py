@@ -43,7 +43,7 @@ gpu_num = int(sys.argv[7])
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpu_devices[gpu_num], True)
+tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
 
 filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
