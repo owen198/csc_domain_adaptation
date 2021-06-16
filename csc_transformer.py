@@ -50,7 +50,7 @@ filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
-if os.path.isfile('results/'filename + '-' +'realdata.png'):
+if os.path.isfile('results/'+filename + '-' +'realdata.png'):
     print(filename + '-' +'realdata.png' + ' exists, exit')
     exit()
 
