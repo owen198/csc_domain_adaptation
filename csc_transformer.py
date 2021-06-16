@@ -30,14 +30,7 @@ from keras.callbacks import EarlyStopping
 
 import kerastuner as kt
 
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
-tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
-gpus = tensorflow.test.gpu_device_name()
-
 # python csc_transformer.py W4662FM0605 W4662FM0606 2 4 128 64
-
 print(sys.argv)
 
 source = sys.argv[1]
@@ -46,6 +39,12 @@ epoch = int(sys.argv[3])
 timesteps = int(sys.argv[4])
 units_layer_1 = int(sys.argv[5])
 units_layer_2 = int(sys.argv[6])
+gpu_num = int(sys.argv[7])
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
+tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
+gpus = tensorflow.test.gpu_device_name()
 
 filename = sys.argv[1]+'_'+target+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
@@ -187,8 +186,8 @@ if retrain:
     early_stopping = EarlyStopping(monitor='val_loss', patience=150, verbose=2)
 
     model = lstm_ae ()
-    lstm_ae_model = model.fit(x=Y, 
-                              y=X, 
+    lstm_ae_model = model.fit(x=X, 
+                              y=Y, 
                               epochs=epoch, batch_size=16, verbose=1, validation_split=0.2, callbacks=[early_stopping])
     model.save(model_name)
 else:
@@ -286,7 +285,7 @@ def plot_score (score_list, date_list, tag):
     plt.tight_layout()
 
     print(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png')
-    fig.savefig(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png', dpi=300)
+    fig.savefig('results/'+filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png', dpi=300)
     plt.show()
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
