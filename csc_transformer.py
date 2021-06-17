@@ -438,28 +438,28 @@ rq2_cv_rmse = mean_squared_error (source_score_cv, source_score, squared=False)
 # rq2
 plot_score (rq2_score, 
             rq2_date, 
-            'Detect synthetic conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
+            'Detect synthetic conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
 
 # rq1
 plot_score (rq1_score, 
             rq1_date, 
-            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
+            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
 
 plot_score (source_score, 
             source_date, 
-            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ tag_dict['source'] +' (source)model')
+            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['source'][-3:] +' (source)model')
 
 plot_score (source_score_cv, 
             source_date_cv, 
-            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ tag_dict['target'] +' (target)model, RMSE='+ "{:.3f}".format(rq2_cv_rmse))
+            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['target'][-3:] +' (target)model, RMSE='+ "{:.3f}".format(rq2_cv_rmse))
 
 plot_score (target_score, 
             target_date, 
-            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['target'] +' (target)model')
+            'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['target'][-3:] +' (target)model')
 
 plot_score (target_score_cv, 
             target_date_cv, 
-            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
+            'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
 
 
