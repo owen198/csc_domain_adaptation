@@ -392,13 +392,13 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
 lstm_model = training_lstm_model(X, Y)
 #X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model)
-#index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
+index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
 X_synthetic = lstm_model.predict(X, verbose=0)
 X_synthetic = pd.DataFrame.from_records([i[0] for i in X_synthetic])
 model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
 
-#for elements in drop_list:
-#    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
+for elements in drop_list:
+    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
 
 
 
