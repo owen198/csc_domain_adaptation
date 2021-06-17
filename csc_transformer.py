@@ -370,7 +370,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 synthetic_score, synthetic_date = get_syntheic_score(synthetic_source_pd, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            model_target)
+                                            model_source)
 
 source_score_cv, source_date_cv = get_score(globals()[tag_dict['source']], 
                                             tag_dict['source_training_from'], 
@@ -399,11 +399,10 @@ plot_score (source_score_cv,
 
 plot_score (synthetic_score, 
             synthetic_date, 
-            'Detect synthetic conditions by using '+ tag_dict['target'] +' (target)model, RMSE='+ "{:.3f}".format(sy_rmse))
+            'Detect synthetic conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(sy_rmse))
 
 
 ### Detecting target domain by synthetic model
-
 target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
@@ -416,10 +415,10 @@ target_score, target_date = get_score(globals()[tag_dict['target']],
                                             target_normalizer,
                                             model_target)
 
-target_score_da, target_date_da = get_score(globals()[tag_dict['target']], 
-                                            tag_dict['target_training_from'], 
-                                            tag_dict['target_end'], 
-                                            target_normalizer,
+target_score_da, target_date_da = get_score(globals()[tag_dict['source']], 
+                                            tag_dict['source_training_from'], 
+                                            tag_dict['source_end'], 
+                                            source_normalizer,
                                             model_synthetic)
 
 da_rmse = mean_squared_error(target_score_da, target_score, squared=False)
@@ -435,7 +434,7 @@ plot_score (target_score_cv,
 
 plot_score (target_score_da, 
             target_date_da, 
-            'Detect ' + tag_dict['target'] +' (target)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
+            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(da_rmse))
 
 
 ### show the difference between real data and synthetic data
