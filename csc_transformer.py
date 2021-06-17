@@ -30,7 +30,7 @@ from keras.callbacks import EarlyStopping
 
 import kerastuner as kt
 
-# python csc_transformer.py W4662FM0605 W4662FM0606 2 4 128 64 0
+# python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
 print(sys.argv)
 
 source = sys.argv[1]
@@ -335,11 +335,11 @@ def get_synthetic_score(data):
     synthetic_source = model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
-    return synthetic_source_pd
+    return synthetic_source_pd, index_2
 
 
 
-X_synthetic = get_synthetic_score(globals()[tag_dict['target']])
+X_synthetic, index_2 = get_synthetic_score(globals()[tag_dict['target']])
 
 model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
 model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
@@ -459,7 +459,7 @@ fig, ax = plt.subplots(figsize=(10,5))
 
 ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.')
 ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.')
-ax.plot(range(duration, duration+interval), synthetic_source_pd[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
+ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
 
 ax.legend()
 ax.grid(True)
