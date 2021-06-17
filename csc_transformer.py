@@ -164,17 +164,16 @@ Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
 
 ### Model construction
-
 model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
 
 def lstm_ae():
     # define model
     model = Sequential(name='test')
-    model.add(LSTM(units_layer_1, activation='relu', input_shape=(timesteps,n_features), return_sequences=True))
-    model.add(LSTM(units_layer_2, activation='relu', return_sequences=False))
+    model.add(LSTM(units_layer_1, activation='tanh', input_shape=(timesteps,n_features), return_sequences=True))
+    model.add(LSTM(units_layer_2, activation='tanh', return_sequences=False))
     model.add(RepeatVector(timesteps))
-    model.add(LSTM(units_layer_2, activation='relu', return_sequences=True))
-    model.add(LSTM(units_layer_1, activation='relu', return_sequences=True))
+    model.add(LSTM(units_layer_2, activation='tanh', return_sequences=True))
+    model.add(LSTM(units_layer_1, activation='tanh', return_sequences=True))
     model.add(TimeDistributed(Dense(n_features)))
     model.compile(optimizer='adam', loss='mse', metrics=[metrics.RootMeanSquaredError()])
     model.summary()
@@ -188,7 +187,11 @@ if retrain:
     model = lstm_ae ()
     lstm_ae_model = model.fit(x=X, 
                               y=Y, 
-                              epochs=epoch, batch_size=16, verbose=1, validation_split=0.2, callbacks=[early_stopping])
+                              epochs=epoch, 
+                              batch_size=16, 
+                              verbose=1, 
+                              validation_split=0.2, 
+                              callbacks=[early_stopping])
     model.save(model_name)
 else:
     model = models.load_model(model_name)
@@ -316,7 +319,7 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def get_synthetic_score(data):
+def get_synthetic_data(data):
     #source_test_pd = pd.DataFrame()
     source_test_pd = data
     source_test_pd = source_test_pd.drop(columns=drop_list)
@@ -337,16 +340,13 @@ def get_synthetic_score(data):
 
     return synthetic_source_pd, index_2
 
+def training_ocsvm_models (X_source, X_target, X_synthetic):
 
+    model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
+    model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
+    model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_synthetic)
 
-X_synthetic, index_2 = get_synthetic_score(globals()[tag_dict['target']])
-
-model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
-model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
-model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_synthetic)
-
-for elements in drop_list:
-    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
+    return model_source, model_target, model_synthetic
 
 def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
@@ -374,30 +374,50 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
 
 
+
+X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']])
+
+model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
+
+for elements in drop_list:
+    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
+
+
+
+
+### RQ1: Detecting target domain by synthetic model
+rq1_score, rq1_date = get_score(globals()[tag_dict['source']], 
+                                            tag_dict['source_training_from'], 
+                                            tag_dict['source_end'], 
+                                            source_normalizer,
+                                            model_synthetic)    
+
 ### RQ2: Detecting target domain by synthetic model
 rq2_score, rq2_date = get_syntheic_score(X_synthetic, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            model_source)
+                                            model_source)                                             
 
+## Cross-validation
 source_score_cv, source_date_cv = get_score(globals()[tag_dict['source']], 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
                                             model_target)
 
+target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
+                                            target_normalizer,
+                                            model_source)
+
+# Benchmark
 source_score, source_date = get_score(globals()[tag_dict['source']], 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
                                             model_source)
 
-### RQ1: Detecting target domain by synthetic model
-target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
-                                            tag_dict['target_training_from'], 
-                                            tag_dict['target_end'], 
-                                            target_normalizer,
-                                            model_source)
 
 target_score, target_date = get_score(globals()[tag_dict['target']], 
                                             tag_dict['target_training_from'], 
@@ -405,21 +425,25 @@ target_score, target_date = get_score(globals()[tag_dict['target']],
                                             target_normalizer,
                                             model_target)
 
-rq1_score, rq1_date = get_score(globals()[tag_dict['source']], 
-                                            tag_dict['source_training_from'], 
-                                            tag_dict['source_end'], 
-                                            source_normalizer,
-                                            model_synthetic)                                            
-
+                                       
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
 N=len(target_score)
 
-print(len(rq2_score), len(target_score))
+rq1_rmse = mean_squared_error (rq1_score[-N:], target_score, squared=False)
+rq1_cv_rmse = mean_squared_error (target_score_cv, target_score, squared=False)
+rq2_rmse = mean_squared_error (rq2_score, target_score, squared=False)
+rq2_cv_rmse = mean_squared_error (source_score_cv, source_score, squared=False)
 
-rq2_rmse = mean_squared_error(rq2_score, target_score, squared=False)
-rq2_cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
-rq1_rmse = mean_squared_error(rq1_score[-N:], target_score, squared=False)
-rq1_cv_rmse = mean_squared_error(target_score_cv, target_score, squared=False)
+
+# rq2
+plot_score (rq2_score, 
+            rq2_date, 
+            'Detect synthetic conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
+
+# rq1
+plot_score (rq1_score, 
+            rq1_date, 
+            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
 
 plot_score (source_score, 
             source_date, 
@@ -429,10 +453,6 @@ plot_score (source_score_cv,
             source_date_cv, 
             'Detect ' + tag_dict['source'] +' (source)conditions by using '+ tag_dict['target'] +' (target)model, RMSE='+ "{:.3f}".format(rq2_cv_rmse))
 
-plot_score (rq2_score, 
-            rq2_date, 
-            'Detect synthetic conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
-
 plot_score (target_score, 
             target_date, 
             'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['target'] +' (target)model')
@@ -441,9 +461,6 @@ plot_score (target_score_cv,
             target_date_cv, 
             'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
-plot_score (rq1_score, 
-            rq1_date, 
-            'Detect ' + tag_dict['source'] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
 
 
 
