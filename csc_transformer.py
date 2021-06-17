@@ -2,16 +2,17 @@ from sklearn import preprocessing
 from sklearn import svm
 from sklearn.metrics import mean_squared_error
 
-import pandas as pd
-
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+
 import random
 import sys
 import os
 import tensorflow
 import datetime
+import logging
 
 from tensorflow import keras
 
@@ -30,8 +31,13 @@ from keras.callbacks import EarlyStopping
 
 import kerastuner as kt
 
+# setup logger
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
+
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
-print(sys.argv)
+
+logging.info('argv:' + sys.argv)
 
 source = sys.argv[1]
 target = sys.argv[2]
@@ -51,7 +57,7 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
 
 
 if os.path.isfile('results/'+filename + '-' +'realdata.png'):
-    print(filename + '-' +'realdata.png' + ' exists, exit')
+    logging.info(filename + '-' +'realdata.png' + ' exists, exit')
     exit()
 
 
