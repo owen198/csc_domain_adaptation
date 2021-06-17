@@ -390,7 +390,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
     return score_list, date_list
 
 
-lstm_model = training_lstm_model()
+lstm_model = training_lstm_model(X, Y)
 #X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model)
 #index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
 X_synthetic = lstm_model.predict(X_target, verbose=0)
