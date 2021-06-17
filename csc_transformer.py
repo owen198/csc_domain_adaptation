@@ -405,7 +405,7 @@ target_score, target_date = get_score(globals()[tag_dict['target']],
                                             target_normalizer,
                                             model_target)
 
-rq1_da, rq1_date_da = get_score(globals()[tag_dict['source']], 
+rq1_score, rq1_date = get_score(globals()[tag_dict['source']], 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
@@ -441,8 +441,8 @@ plot_score (target_score_cv,
             target_date_cv, 
             'Detect ' + tag_dict['target'] +' (target)conditions by using '+ tag_dict['source'] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
-plot_score (rq1, 
-            rq1, 
+plot_score (rq1_score, 
+            rq1_date, 
             'Detect ' + tag_dict['source'] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
 
 
