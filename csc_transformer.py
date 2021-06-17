@@ -38,7 +38,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
 
-logging.info('argv:' + sys.argv)
+logging.info('argv:' + str(sys.argv))
 
 source = sys.argv[1]
 target = sys.argv[2]
