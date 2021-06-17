@@ -412,13 +412,13 @@ rq1_score, rq1_date = get_score(globals()[tag_dict['source']],
                                             model_synthetic)                                            
 
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
-N=len(rq2_score)
+N=len(target_score)
 
 print(len(rq2_score), len(target_score))
 
-rq2_rmse = mean_squared_error(rq2_score, target_score[-N:], squared=False)
+rq2_rmse = mean_squared_error(rq2_score, target_score, squared=False)
 rq2_cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
-rq1_rmse = mean_squared_error(rq1_score, target_score, squared=False)
+rq1_rmse = mean_squared_error(rq1_score[-N:], target_score, squared=False)
 rq1_cv_rmse = mean_squared_error(target_score_cv, target_score, squared=False)
 
 plot_score (source_score, 
