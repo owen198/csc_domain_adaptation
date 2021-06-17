@@ -400,7 +400,9 @@ model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X
 for elements in drop_list:
     X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
 
-
+logging.info('source shape:' + str(globals()[tag_dict['source']].shape))
+logging.info('target shape:' + str(globals()[tag_dict['target']].shape))
+logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 
 
 ### RQ1: Detecting target domain by synthetic model
