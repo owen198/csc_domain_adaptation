@@ -97,9 +97,6 @@ globals()[tag_dict['source']] = pd.DataFrame()
 for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
     globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
 
-print('file length:', globals()[tag_dict['source']].shape, globals()[tag_dict['target']].shape)
-print(tag_dict)
-
 globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
 globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
 
@@ -163,9 +160,6 @@ Y = np.array(Y)
 Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
 
-### Model construction
-model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
-
 def lstm_ae():
     # define model
     model = Sequential(name='test')
@@ -180,21 +174,38 @@ def lstm_ae():
 
     return model
 
+def training_lstm_model (input_data, output_data):
 
-if retrain:
     early_stopping = EarlyStopping(monitor='val_loss', patience=150, verbose=2)
 
     model = lstm_ae ()
-    lstm_ae_model = model.fit(x=X, 
-                              y=Y, 
+    lstm_ae_model = model.fit(x=input_data, 
+                              y=output_data, 
                               epochs=epoch, 
                               batch_size=16, 
                               verbose=1, 
                               validation_split=0.2, 
                               callbacks=[early_stopping])
+
+    model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
     model.save(model_name)
-else:
-    model = models.load_model(model_name)
+
+
+    fig, ax = plt.subplots(figsize=(10,5))
+
+    ax.plot(lstm_ae_model.history['loss'], marker='.', label='loss')
+    ax.plot(lstm_ae_model.history['val_loss'], marker='.', label='validation loss')
+    #ax.plot(lstm_ae_model.history['transformation_loss'], marker='.', label='transformation loss')
+
+    ax.legend()
+    ax.grid(True)
+
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.savefig('results/'+filename+'-'+'epoches.png', dpi=300)
+    plt.show()
+
+    return lstm_ae_model
 
 '''
 if retrain:
@@ -247,7 +258,7 @@ if retrain:
 else:
     model = models.load_model(model_name)  
 '''
-
+'''
 if retrain:
     fig, ax = plt.subplots(figsize=(10,5))
 
@@ -262,7 +273,7 @@ if retrain:
     plt.xlabel('epoch')
     plt.savefig('results/'+filename+'-'+'epoches.png', dpi=300)
     plt.show()
-
+'''
 #synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
 #synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_data])
 
@@ -319,9 +330,8 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def get_synthetic_data(data):
-    #source_test_pd = pd.DataFrame()
-    source_test_pd = data
+def get_synthetic_data(source_test_pd, lstm_model):
+
     source_test_pd = source_test_pd.drop(columns=drop_list)
 
     index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
@@ -335,7 +345,7 @@ def get_synthetic_data(data):
     source_test_np = np.array(source_test_np)
     source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
 
-    synthetic_source = model.predict(source_test_np, verbose=0)
+    synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
     return synthetic_source_pd, index_2
@@ -373,14 +383,14 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
     return score_list, date_list
 
 
-
-
-X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']])
-
+lstm_model = training_lstm_model()
+#X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model)
+#index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
+X_synthetic = lstm_model.predict(X_target, verbose=0)
 model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
 
-for elements in drop_list:
-    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
+#for elements in drop_list:
+#    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
 
 
 
