@@ -418,7 +418,7 @@ print(len(rq2_score), len(target_score))
 
 rq2_rmse = mean_squared_error(rq2_score, target_score[-N:], squared=False)
 rq2_cv_rmse = mean_squared_error(source_score_cv, source_score, squared=False)
-rq1_rmse = mean_squared_error(target_score_da, target_score, squared=False)
+rq1_rmse = mean_squared_error(rq1_score, target_score, squared=False)
 rq1_cv_rmse = mean_squared_error(target_score_cv, target_score, squared=False)
 
 plot_score (source_score, 
