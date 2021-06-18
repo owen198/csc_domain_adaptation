@@ -67,74 +67,99 @@ retrain = True
 path = '/data/'
 
 
-tag_pd = pd.read_csv('csc_w4.csv')
-
-
-source_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-source_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
-source_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-source_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
-source_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-source_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
-
-target_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-target_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
-target_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-target_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
-target_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
-target_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
 
 
 
-tag_dict = {'source':sys.argv[1],
-            'source_training_from': datetime.datetime(source_training_from_year,source_training_from_month,1,0,0),
-            'source_training_to': datetime.datetime(source_training_to_year,source_training_to_month,1,0,0),
-            'source_end': datetime.datetime(source_end_year,source_end_month,1,0,0),
-            
-            'target':sys.argv[2],
-            'target_training_from': datetime.datetime(target_training_from_year,target_training_from_month,1,0,0), 
-            'target_training_to': datetime.datetime(target_training_to_year,target_training_to_month,1,0,0), 
-            'target_end': datetime.datetime(target_end_year,target_end_month,1,0,0)}
+def data_loader (source, target):
 
-globals()[tag_dict['target']] = pd.DataFrame()
-for file_list in tag_pd[tag_pd['tag']==tag_dict['target']]['data'].to_list():
-    globals()[tag_dict['target']] = globals()[tag_dict['target']].append(pd.read_csv(path + file_list))
+    tag_pd = pd.read_csv('csc_w4.csv')
 
-globals()[tag_dict['source']] = pd.DataFrame()
-for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
-    globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
+    source_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    source_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+    source_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    source_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+    source_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    source_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[1]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
 
-globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
-globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
+    target_training_from_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    target_training_from_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].head(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+    target_training_to_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    target_training_to_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==1)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
+    target_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
+    target_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
 
-globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']][
-                                                  (globals()[tag_dict['source']]['datetime'] > tag_dict['source_training_from']) &
-                                                  (globals()[tag_dict['source']]['datetime'] <= tag_dict['source_training_to']) ]
 
-globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']][
-                                                  (globals()[tag_dict['target']]['datetime'] > tag_dict['target_training_from']) &
-                                                  (globals()[tag_dict['target']]['datetime'] <= tag_dict['target_training_to']) ]
 
-drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
+    tag_dict = {'source':source,
+                'source_training_from': datetime.datetime(source_training_from_year,source_training_from_month,1,0,0),
+                'source_training_to': datetime.datetime(source_training_to_year,source_training_to_month,1,0,0),
+                'source_end': datetime.datetime(source_end_year,source_end_month,1,0,0),
+                
+                'target':target,
+                'target_training_from': datetime.datetime(target_training_from_year,target_training_from_month,1,0,0), 
+                'target_training_to': datetime.datetime(target_training_to_year,target_training_to_month,1,0,0), 
+                'target_end': datetime.datetime(target_end_year,target_end_month,1,0,0)}
 
-globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']+'_training'].drop(columns=drop_list)
-globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
+    globals()[tag_dict['target']] = pd.DataFrame()
+    for file_list in tag_pd[tag_pd['tag']==tag_dict['target']]['data'].to_list():
+        globals()[tag_dict['target']] = globals()[tag_dict['target']].append(pd.read_csv(path + file_list))
 
-shape_min = min (globals()[tag_dict['source']+'_training'].shape[0], 
-                 globals()[tag_dict['target']+'_training'].shape[0])
-shape_max = max (globals()[tag_dict['source']+'_training'].shape[0], 
-                 globals()[tag_dict['target']+'_training'].shape[0])
+    globals()[tag_dict['source']] = pd.DataFrame()
+    for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
+        globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
 
-index = sorted(random.sample(range(0, shape_max), shape_min))
+    globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
+    globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
 
-normalizer = preprocessing.MinMaxScaler()
-source_normalizer = normalizer.fit(globals()[tag_dict['source']+'_training'])
+    globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']][
+                                                    (globals()[tag_dict['source']]['datetime'] > tag_dict['source_training_from']) &
+                                                    (globals()[tag_dict['source']]['datetime'] <= tag_dict['source_training_to']) ]
 
-normalizer = preprocessing.MinMaxScaler()
-target_normalizer = normalizer.fit(globals()[tag_dict['target']+'_training'])
+    globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']][
+                                                    (globals()[tag_dict['target']]['datetime'] > tag_dict['target_training_from']) &
+                                                    (globals()[tag_dict['target']]['datetime'] <= tag_dict['target_training_to']) ]
 
-X_source = pd.DataFrame(source_normalizer.transform(globals()[tag_dict['source']+'_training']))
-X_target = pd.DataFrame(target_normalizer.transform(globals()[tag_dict['target']+'_training']))
+    drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
+
+    globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']+'_training'].drop(columns=drop_list)
+    globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
+
+    shape_min = min (globals()[tag_dict['source']+'_training'].shape[0], 
+                    globals()[tag_dict['target']+'_training'].shape[0])
+    shape_max = max (globals()[tag_dict['source']+'_training'].shape[0], 
+                    globals()[tag_dict['target']+'_training'].shape[0])
+
+    index = sorted(random.sample(range(0, shape_max), shape_min))
+
+    normalizer = preprocessing.MinMaxScaler()
+    source_normalizer = normalizer.fit(globals()[tag_dict['source']+'_training'])
+
+    normalizer = preprocessing.MinMaxScaler()
+    target_normalizer = normalizer.fit(globals()[tag_dict['target']+'_training'])
+
+    X_source = pd.DataFrame(source_normalizer.transform(globals()[tag_dict['source']+'_training']))
+    X_target = pd.DataFrame(target_normalizer.transform(globals()[tag_dict['target']+'_training']))
+
+
+    if len(X_target) > len(X_source):
+        X = X_target.iloc[index]
+        Y = X_source
+    else:
+        X = X_target
+        Y = X_source.iloc[index]
+
+    #X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
+    X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
+    Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
+
+    X = np.array(X)
+    X = X.reshape(X.shape[0], timesteps, n_features)
+
+    Y = np.array(Y)
+    Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
+
+    return X, Y
+
 
 def temporalize(X, y, lookback):
     output_X = []
@@ -149,22 +174,14 @@ def temporalize(X, y, lookback):
         output_y.append(y[i+lookback+1])
     return output_X, output_y
 
-if len(X_target) > len(X_source):
-    X = X_target.iloc[index]
-    Y = X_source
-else:
-    X = X_target
-    Y = X_source.iloc[index]
 
-#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
-X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
-Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
+X, Y = data_loader(sys.argv[1], sys.argv[2])
 
-X = np.array(X)
-X = X.reshape(X.shape[0], timesteps, n_features)
+logging.info('source shape:' + str(Y.shape))
+logging.info('target shape:' + str(X.shape))
 
-Y = np.array(Y)
-Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
+
+
 
 
 def lstm_ae():
