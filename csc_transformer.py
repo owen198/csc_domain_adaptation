@@ -293,7 +293,7 @@ def get_synthetic_data (data, lstm_model):
     print(list(synthetic_source_pd))
     print(len(synthetic_source_pd), len(data))
 
-    synthetic_source_pd['datetime'] = data['datetime'].values
+    synthetic_source_pd['datetime'] = data['datetime'].tail(len(synthetic_source_pd)).values
 
     return synthetic_source_pd
 
