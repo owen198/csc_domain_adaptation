@@ -274,19 +274,19 @@ def get_synthetic_data (data, lstm_model):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
-    source_test_pd = data.drop(columns=drop_list)
-    source_test_pd = pd.DataFrame(target_normalizer.transform(source_test_pd))
+    data = data.drop(columns=drop_list)
+    target_pd = pd.DataFrame(target_normalizer.transform(data))
 
-    source_test_np, _ = temporalize(X = source_test_pd.values, 
-                                    y = np.zeros(source_test_pd.shape[0]), 
+    target_np, _ = temporalize(X = target_pd.values, 
+                                    y = np.zeros(target_pd.shape[0]), 
                                     lookback = timesteps)
 
-    synthetic_source = lstm_model.predict(source_test_np, verbose=0)
-    synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
+    synthetic_np = lstm_model.predict(target_np, verbose=0)
+    synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_np])
 
-    synthetic_source_pd['datetime'] = data['datetime'].tail(len(synthetic_source_pd)).values
+    synthetic_pd['datetime'] = data['datetime'].tail(len(synthetic_pd)).values
 
-    return synthetic_source_pd
+    return synthetic_pd
 
 def training_ocsvm_models (X_source, X_target, X_synthetic):
     logging.info('training_ocsvm_models')
