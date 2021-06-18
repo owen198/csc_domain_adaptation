@@ -127,7 +127,7 @@ def data_loader (source, target):
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
 
-    return globals()[tag_dict['source']], globals()[tag_dict['target']], globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training']
+    return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']]
 
 def get_shapes (data_1, data_2):
     shape_min = min (data_1.shape[0], data_2.shape[0])
