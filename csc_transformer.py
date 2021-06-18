@@ -289,7 +289,7 @@ def get_synthetic_data (data, lstm_model):
 
     synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
-    synthetic_source_pd['datatime'] = data['datatime']
+    synthetic_source_pd['datetime'] = data['datetime']
 
     return synthetic_source_pd
 
@@ -351,8 +351,6 @@ logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
-
-print(list(target_validation))
 
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
