@@ -398,9 +398,9 @@ Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
 logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
-lstm_model = training_lstm_model(X, Y)
-
+lstm_model = training_lstm_model(Y, X)
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
+
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 logging.info('X_source shape:' + str(source_validation.shape))
 logging.info('X_target shape:' + str(target_validation.shape))
