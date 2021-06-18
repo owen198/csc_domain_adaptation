@@ -59,7 +59,7 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
 
 
 if os.path.isfile('results/'+filename + '-' +'realdata.png'):
-    logging.info(filename + '-' +'realdata.png' + ' exists, exit')
+    logging.info(filename + '-' +'distribution.png' + ' exists, exit')
     exit()
 
 
