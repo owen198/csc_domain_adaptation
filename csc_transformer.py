@@ -536,7 +536,7 @@ x_min, x_max = X_target_dist.min(0), X_target_dist.max(0)
 X_norm = (X_target_dist-x_min) / (x_max-x_min)  #Normalize
 X_target_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
-X_synthetic_dist = pca_scale.transform(X_synthetic.drop(columns=['datetime'])
+X_synthetic_dist = pca_scale.transform(X_synthetic.drop(columns=['datetime']))
 x_min, x_max = X_synthetic_dist.min(0), X_synthetic_dist.max(0)
 X_norm = (X_synthetic_dist-x_min) / (x_max-x_min)  #Normalize
 X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
