@@ -108,6 +108,10 @@ def data_loader (source, target):
     for file_list in tag_pd[tag_pd['tag']==tag_dict['source']]['data'].to_list():
         globals()[tag_dict['source']] = globals()[tag_dict['source']].append(pd.read_csv(path + file_list))
 
+    logging.info('source shape:' + str(globals()[tag_dict['target']].shape))
+    logging.info('target shape:' + str(globals()[tag_dict['source']].shape))
+
+
     globals()[tag_dict['source']]['datetime'] = globals()[tag_dict['source']]['timestamp'].astype('int').astype("datetime64[s]")
     globals()[tag_dict['target']]['datetime'] = globals()[tag_dict['target']]['timestamp'].astype('int').astype("datetime64[s]")
 
