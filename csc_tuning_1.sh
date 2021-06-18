@@ -1,5 +1,18 @@
 
 # W4633080500
+python csc_transformer.py W4633080500 W4662FM0605 30 4 32 4 1
+python csc_transformer.py W4633080500 W4662FM0605 30 16 32 4 1
+python csc_transformer.py W4633080500 W4662FM0606 30 4 32 4 1
+python csc_transformer.py W4633080500 W4662FM0606 30 16 32 4 1
+python csc_transformer.py W4633080500 W4633070102 30 4 32 4 1
+python csc_transformer.py W4633080500 W4633070102 30 16 32 4 1
+python csc_transformer.py W4633080500 W4633080200 30 4 32 4 1
+python csc_transformer.py W4633080500 W4633080200 30 16 32 4 1
+python csc_transformer.py W4633080500 W4662FM0400 30 4 32 4 1
+python csc_transformer.py W4633080500 W4662FM0400 30 16 32 4 1
+python csc_transformer.py W4633080500 W4662FM0507 30 4 32 4 1
+python csc_transformer.py W4633080500 W4662FM0507 30 16 32 4 1
+
 python csc_transformer.py W4633080500 W4662FM0605 30 4 64 16 1
 python csc_transformer.py W4633080500 W4662FM0605 30 16 64 16 1
 python csc_transformer.py W4633080500 W4662FM0606 30 4 64 16 1
