@@ -88,8 +88,6 @@ def data_loader (source, target):
     target_end_month = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][4:6])
     target_end_year = int(tag_pd[(tag_pd['tag']==sys.argv[2]) & (tag_pd['Normal']==0)].tail(1)['data'].values[0].split('_')[1].split('.')[0][0:4])
 
-
-
     tag_dict = {'source':source,
                 'source_training_from': datetime.datetime(source_training_from_year,source_training_from_month,1,0,0),
                 'source_training_to': datetime.datetime(source_training_to_year,source_training_to_month,1,0,0),
@@ -128,22 +126,21 @@ def data_loader (source, target):
     globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']+'_training'].drop(columns=drop_list)
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
-    shape_min = min (globals()[tag_dict['source']+'_training'].shape[0], 
-                    globals()[tag_dict['target']+'_training'].shape[0])
-    shape_max = max (globals()[tag_dict['source']+'_training'].shape[0], 
-                    globals()[tag_dict['target']+'_training'].shape[0])
+
+    return globals()[tag_dict['source']], globals()[tag_dict['target']], globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training']
+
+def get_shapes (data_1, data_2):
+    shape_min = min (data_1.shape[0], data_2.shape[0])
+    shape_max = max (data_1.shape[0], data_2.shape[0])
+
+    return shape_min, shape_max
+
+def resample (data_1, data_2):
+
+    shape_min, shape_max = get_shapes (source_training, target_training)
+
 
     index = sorted(random.sample(range(0, shape_max), shape_min))
-
-    normalizer = preprocessing.MinMaxScaler()
-    source_normalizer = normalizer.fit(globals()[tag_dict['source']+'_training'])
-
-    normalizer = preprocessing.MinMaxScaler()
-    target_normalizer = normalizer.fit(globals()[tag_dict['target']+'_training'])
-
-    X_source = pd.DataFrame(source_normalizer.transform(globals()[tag_dict['source']+'_training']))
-    X_target = pd.DataFrame(target_normalizer.transform(globals()[tag_dict['target']+'_training']))
-
 
     if len(X_target) > len(X_source):
         X = X_target.iloc[index]
@@ -152,23 +149,7 @@ def data_loader (source, target):
         X = X_target
         Y = X_source.iloc[index]
 
-    #X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
-    X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
-    Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
-
-    X = np.array(X)
-    X = X.reshape(X.shape[0], timesteps, n_features)
-
-    Y = np.array(Y)
-    Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
-
-    logging.info('source shape (after temporalize):' + str(Y.shape))
-    logging.info('target shape (after temporalize):' + str(X.shape))
-
-    return X, Y, tag_dict, drop_list, shape_min
-
-
-def temporalize(X, y, lookback):
+def temporalize (X, y, lookback):
     output_X = []
     output_y = []
 
@@ -179,10 +160,37 @@ def temporalize(X, y, lookback):
             t.append(X[[(i+j+1)], :])
         output_X.append(t)
         output_y.append(y[i+lookback+1])
+
+    output_X = np.array(output_X)
+    output_X = output_X.reshape(output_X.shape[0], timesteps, n_features)
+
     return output_X, output_y
 
+source_training, target_training, source_validation, source_validation = data_loader (sys.argv[1], sys.argv[2])
+#shape_min, shape_max = get_shapes (source_training, target_training)
 
-X, Y, tag_dict, drop_list, shape_min= data_loader(sys.argv[1], sys.argv[2])
+normalizer = preprocessing.MinMaxScaler()
+source_normalizer = normalizer.fit(source_training)
+
+normalizer = preprocessing.MinMaxScaler()
+target_normalizer = normalizer.fit(target_training)
+
+X_source = pd.DataFrame(source_normalizer.transform(source_training))
+X_target = pd.DataFrame(target_normalizer.transform(target_training))
+
+X, Y = resample(X_source, X_target)
+
+#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
+X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
+Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
+
+logging.info('source shape (after temporalize):' + str(Y.shape))
+logging.info('target shape (after temporalize):' + str(X.shape))
+
+
+
+
+#X, Y, tag_dict, drop_list, shape_min = data_loader(sys.argv[1], sys.argv[2])
 
 
 
