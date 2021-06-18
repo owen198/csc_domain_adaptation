@@ -71,6 +71,7 @@ path = '/data/'
 
 
 def data_loader (source, target):
+    logging.info('data_loader')
 
     tag_pd = pd.read_csv('csc_w4.csv')
 
@@ -130,6 +131,9 @@ def data_loader (source, target):
     return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']]
 
 def get_shapes (data_1, data_2):
+
+    logging.info('get_shapes')
+
     shape_min = min (data_1.shape[0], data_2.shape[0])
     shape_max = max (data_1.shape[0], data_2.shape[0])
 
@@ -137,9 +141,9 @@ def get_shapes (data_1, data_2):
 
 def resample (data_1, data_2):
 
+    logging.info('resample')
+
     shape_min, shape_max = get_shapes (source_training, target_training)
-
-
     index = sorted(random.sample(range(0, shape_max), shape_min))
 
     if len(X_target) > len(X_source):
@@ -149,7 +153,11 @@ def resample (data_1, data_2):
         X = X_target
         Y = X_source.iloc[index]
 
+    return X, Y
+
 def temporalize (X, y, lookback):
+    logging.info('temporalize')
+
     output_X = []
     output_y = []
 
