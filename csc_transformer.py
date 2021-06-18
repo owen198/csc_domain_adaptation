@@ -128,7 +128,7 @@ def data_loader (source, target):
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
 
-    return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']]
+    return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
 
 def get_shapes (data_1, data_2):
 
@@ -290,9 +290,6 @@ def get_synthetic_data (data, lstm_model):
     synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
 
-    print(list(synthetic_source_pd))
-    print(len(synthetic_source_pd), len(data))
-
     synthetic_source_pd['datetime'] = data['datetime'].tail(len(synthetic_source_pd)).values
 
     return synthetic_source_pd
@@ -333,7 +330,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
 
 
-source_training, target_training, source_validation, target_validation = data_loader (sys.argv[1], sys.argv[2])
+source_training, target_training, source_validation, target_validation, tag_dict = data_loader (sys.argv[1], sys.argv[2])
 #shape_min, shape_max = get_shapes (source_training, target_training)
 
 normalizer = preprocessing.MinMaxScaler()
@@ -358,8 +355,8 @@ lstm_model = training_lstm_model(X, Y)
 
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
-logging.info('X_source shape:' + str(X_source.shape))
-logging.info('X_target shape:' + str(X_target.shape))
+logging.info('X_source shape:' + str(source_validation.shape))
+logging.info('X_target shape:' + str(target_validation.shape))
 
 model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic.drop(columns=['datetime']))
 
@@ -432,33 +429,9 @@ if retrain:
     plt.savefig('results/'+filename+'-'+'epoches.png', dpi=300)
     plt.show()
 '''
-#synthetic_data = model.predict(x={'source': Y, 'target': X}, verbose=0)
-#synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_data])
-
-
-
-
-## Validation
-
-### Initializing the validation
-
-
-#X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list, shape_min)
-#index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
-#X_synthetic = lstm_model.predict(X, verbose=0)
-#X_synthetic = pd.DataFrame.from_records([i[0] for i in X_synthetic])
-#model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
-
-#for elements in drop_list:
-#    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
-
-# logging.info('source shape:' + str(globals()[tag_dict['source']].shape))
-# logging.info('target shape:' + str(globals()[tag_dict['target']].shape))
-# logging.info('X_synthetic shape:' + str(X_synthetic.shape))
-
 
 ### RQ1: Detecting target domain by synthetic model
-rq1_score, rq1_date = get_score(globals()[tag_dict['source']], 
+rq1_score, rq1_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
@@ -471,27 +444,27 @@ rq2_score, rq2_date = get_syntheic_score(X_synthetic,
                                             model_source)                                             
 
 ## Cross-validation
-source_score_cv, source_date_cv = get_score(globals()[tag_dict['source']], 
+source_score_cv, source_date_cv = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
                                             model_target)
 
-target_score_cv, target_date_cv = get_score(globals()[tag_dict['target']], 
+target_score_cv, target_date_cv = get_score(target_validation, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
                                             target_normalizer,
                                             model_source)
 
 # Benchmark
-source_score, source_date = get_score(globals()[tag_dict['source']], 
+source_score, source_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
                                             source_normalizer,
                                             model_source)
 
 
-target_score, target_date = get_score(globals()[tag_dict['target']], 
+target_score, target_date = get_score(target_validation, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
                                             target_normalizer,
