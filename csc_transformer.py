@@ -543,8 +543,8 @@ X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
 fig, ax = plt.subplots(figsize=(10,5))
 
-ax.scatter(X_source_df['dim1'], X_source_df['dim2'], alpha=0.1, label='source')
-ax.scatter(X_target_df['dim1'], X_target_df['dim2'], alpha=0.1, label='target')
+ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
+ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
 ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
 
 ax.legend()
