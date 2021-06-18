@@ -58,7 +58,7 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
-if os.path.isfile('results/'+filename + '-' +'realdata.png'):
+if os.path.isfile('results/'+filename + '-' +'distribution.png'):
     logging.info(filename + '-' +'distribution.png' + ' exists, exit')
     exit()
 
