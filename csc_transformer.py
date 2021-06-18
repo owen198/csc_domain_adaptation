@@ -1,6 +1,7 @@
 from sklearn import preprocessing
 from sklearn import svm
 from sklearn.metrics import mean_squared_error
+from sklearn.decomposition import PCA
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -379,7 +380,7 @@ source_normalizer = normalizer.fit(source_training)
 normalizer = preprocessing.MinMaxScaler()
 target_normalizer = normalizer.fit(target_training)
 
-X_source = pd.DataFrame(source_normalizer.transform(source_training))
+X_source = pd.DataFrame(target_normalizer.transform(source_training))
 X_target = pd.DataFrame(target_normalizer.transform(target_training))
 
 X, Y = resample(X_source, X_target)
@@ -404,13 +405,13 @@ model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X
 rq1_score, rq1_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_synthetic)    
 
 source_score_syn, source_date_syn = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_synthetic)    
 
 ### RQ2: Detecting target domain by synthetic model
@@ -428,7 +429,7 @@ syn_score, syn_date = get_syntheic_score(X_synthetic,
 source_score_cv, source_date_cv = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_target)
 
 target_score_cv, target_date_cv = get_score(target_validation, 
@@ -441,7 +442,7 @@ target_score_cv, target_date_cv = get_score(target_validation,
 source_score, source_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            source_normalizer,
+                                            target_normalizer,
                                             model_source)
 
 target_score, target_date = get_score(target_validation, 
@@ -520,3 +521,36 @@ plt.tight_layout()
 plt.savefig('results/'+filename + '-' +'realdata.png', dpi=300)
 plt.show()
 
+
+### show distribution
+pca_scale = PCA(n_components=2)
+pca_scale = pca_scale.fit(X_source)
+
+X_source_dist = pca_scale.transform(X_source)
+x_min, x_max = X_source_dist.min(0), X_source_dist.max(0)
+X_norm = (X_source_dist-x_min) / (x_max-x_min)  #Normalize
+X_source_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+
+X_target_dist = pca_scale.transform(X_target)
+x_min, x_max = X_target_dist.min(0), X_target_dist.max(0)
+X_norm = (X_target_dist-x_min) / (x_max-x_min)  #Normalize
+X_target_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+
+X_synthetic_dist = pca_scale.transform(X_synthetic)
+x_min, x_max = X_synthetic_dist.min(0), X_synthetic_dist.max(0)
+X_norm = (X_synthetic_dist-x_min) / (x_max-x_min)  #Normalize
+X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+
+fig, ax = plt.subplots(figsize=(10,5))
+
+ax.scatter(X_source_df['dim1'], X_source_df['dim2'], alpha=0.1, label='source')
+ax.scatter(X_target_df['dim1'], X_target_df['dim2'], alpha=0.1, label='target')
+ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
+
+ax.legend()
+ax.grid(True)
+
+#plt.ylim(0, 1)
+#plt.xlim(0, 1)
+plt.savefig('results/'+filename + '-' +'distribution.png', dpi=300)
+plt.show()
