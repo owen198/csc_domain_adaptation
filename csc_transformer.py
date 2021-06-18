@@ -328,45 +328,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
         
     return score_list, date_list
 
-
-
-
-
-source_training, target_training, source_validation, target_validation, tag_dict = data_loader (sys.argv[1], sys.argv[2])
-#shape_min, shape_max = get_shapes (source_training, target_training)
-
-normalizer = preprocessing.MinMaxScaler()
-source_normalizer = normalizer.fit(source_training)
-
-normalizer = preprocessing.MinMaxScaler()
-target_normalizer = normalizer.fit(target_training)
-
-X_source = pd.DataFrame(source_normalizer.transform(source_training))
-X_target = pd.DataFrame(target_normalizer.transform(target_training))
-
-X, Y = resample(X_source, X_target)
-
-#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
-X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
-Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
-
-logging.info('source shape (after temporalize):' + str(Y.shape))
-logging.info('target shape (after temporalize):' + str(X.shape))
-
-lstm_model = training_lstm_model(X, Y)
-
-X_synthetic = get_synthetic_data(target_validation, lstm_model)
-logging.info('X_synthetic shape:' + str(X_synthetic.shape))
-logging.info('X_source shape:' + str(source_validation.shape))
-logging.info('X_target shape:' + str(target_validation.shape))
-
-model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic.drop(columns=['datetime']))
-
-
-
-'''
-if retrain:
-
+def lstm_ae_2():
     encoder = Sequential(
         [
             LSTM(units_layer_1, activation='tanh', return_sequences=True),
@@ -412,25 +374,39 @@ if retrain:
 
     model.save(model_name)
 
-else:
-    model = models.load_model(model_name)  
-'''
-'''
-if retrain:
-    fig, ax = plt.subplots(figsize=(10,5))
+    return model
 
-    ax.plot(lstm_ae_model.history['loss'], marker='.', label='loss')
-    ax.plot(lstm_ae_model.history['val_loss'], marker='.', label='validation loss')
-    #ax.plot(lstm_ae_model.history['transformation_loss'], marker='.', label='transformation loss')
 
-    ax.legend()
-    ax.grid(True)
+source_training, target_training, source_validation, target_validation, tag_dict = data_loader (sys.argv[1], sys.argv[2])
+#shape_min, shape_max = get_shapes (source_training, target_training)
 
-    plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.savefig('results/'+filename+'-'+'epoches.png', dpi=300)
-    plt.show()
-'''
+normalizer = preprocessing.MinMaxScaler()
+source_normalizer = normalizer.fit(source_training)
+
+normalizer = preprocessing.MinMaxScaler()
+target_normalizer = normalizer.fit(target_training)
+
+X_source = pd.DataFrame(source_normalizer.transform(source_training))
+X_target = pd.DataFrame(target_normalizer.transform(target_training))
+
+X, Y = resample(X_source, X_target)
+
+#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
+X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
+Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
+
+logging.info('source shape (after temporalize):' + str(Y.shape))
+logging.info('target shape (after temporalize):' + str(X.shape))
+
+lstm_model = training_lstm_model(X, Y)
+
+X_synthetic = get_synthetic_data(target_validation, lstm_model)
+logging.info('X_synthetic shape:' + str(X_synthetic.shape))
+logging.info('X_source shape:' + str(source_validation.shape))
+logging.info('X_target shape:' + str(target_validation.shape))
+
+model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic.drop(columns=['datetime']))
+
 
 ### RQ1: Detecting target domain by synthetic model
 rq1_score, rq1_date = get_score(source_validation, 
@@ -477,10 +453,10 @@ target_score, target_date = get_score(target_validation,
 N=len(target_score)
 
 
-logging.info('target score shape:' + str(target_score.shape))
-logging.info('source score shape:' + str(source_score.shape))
-logging.info('rq1 score shape:' + str(rq1_score.shape))
-logging.info('rq2 score shape:' + str(rq2_score.shape))
+logging.info('target score shape:' + len(target_score))
+logging.info('source score shape:' + len(source_score))
+logging.info('rq1 score shape:' + len(rq1_score))
+logging.info('rq2 score shape:' + len(rq2_score))
 
 rq1_rmse = mean_squared_error (rq1_score[-N:], target_score, squared=False)
 rq1_cv_rmse = mean_squared_error (target_score_cv, target_score, squared=False)
