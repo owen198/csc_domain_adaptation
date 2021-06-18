@@ -201,9 +201,8 @@ def training_lstm_model (input_data, output_data):
                               validation_split=0.2, 
                               callbacks=[early_stopping])
 
-    model_name = '../data/W4/' + tag_dict['target'] + '_encoded'
+    model_name = 'model/' + filename
     model.save(model_name)
-
 
     fig, ax = plt.subplots(figsize=(10,5))
 
