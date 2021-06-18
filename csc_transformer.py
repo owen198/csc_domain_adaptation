@@ -220,13 +220,13 @@ def training_lstm_model (input_data, output_data):
 
     return model
 
-
-
 def scorer_(Y_pred):
+    logging.info('scorer_')
     a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
     return a*100
 
 def plot_score (score_list, date_list, tag):
+    logging.info('plot_score')
 
     fig, ax = plt.subplots(figsize=(10, 3))
     plt.xticks(rotation=45)
@@ -241,7 +241,7 @@ def plot_score (score_list, date_list, tag):
     plt.show()
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
-
+    logging.info('get_score')
 
     score_list = []
     date_list = []
@@ -271,6 +271,7 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
     return score_list, date_list
 
 def get_synthetic_data (data, lstm_model):
+    logging.info('get_synthetic_data')
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
@@ -295,6 +296,7 @@ def get_synthetic_data (data, lstm_model):
     return synthetic_source_pd
 
 def training_ocsvm_models (X_source, X_target, X_synthetic):
+    logging.info('training_ocsvm_models')
 
     model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
     model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
@@ -303,6 +305,7 @@ def training_ocsvm_models (X_source, X_target, X_synthetic):
     return model_source, model_target, model_synthetic
 
 def get_syntheic_score (data_df, start_date, end_date, prediction_model):
+    logging.info('get_syntheic_score')
 
     score_list = []
     date_list = []
@@ -315,7 +318,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
         if validation_df.shape[0] > 0:
 
-            validation_df_score = validation_df.drop(columns=drop_list)
+            validation_df_score = validation_df.drop(columns=['datetime'])
             validation_df_score = prediction_model.predict(validation_df_score)
 
             score_list.append(scorer_(validation_df_score))
