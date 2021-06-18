@@ -128,7 +128,10 @@ def data_loader (source, target):
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
 
-    return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']]
+    return globals()[tag_dict['source']+'_training'], 
+            globals()[tag_dict['target']+'_training'], 
+            globals()[tag_dict['source']], 
+            globals()[tag_dict['target']]
 
 def get_shapes (data_1, data_2):
 
@@ -287,6 +290,7 @@ def get_synthetic_data (data, lstm_model):
 
     synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
+    synthetic_source_pd['datatime'] = data['datatime']
 
     return synthetic_source_pd
 
@@ -351,10 +355,10 @@ lstm_model = training_lstm_model(X, Y)
 
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
+logging.info('X_source shape:' + str(X_source.shape))
+logging.info('X_target shape:' + str(X_target.shape))
 
-
-
-
+model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic.drop(columns=['datetime']))
 
 
 
@@ -436,18 +440,18 @@ if retrain:
 ### Initializing the validation
 
 
-X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list, shape_min)
+#X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list, shape_min)
 #index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
 #X_synthetic = lstm_model.predict(X, verbose=0)
 #X_synthetic = pd.DataFrame.from_records([i[0] for i in X_synthetic])
-model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
+#model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X_target, X_synthetic)
 
-for elements in drop_list:
-    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
+#for elements in drop_list:
+#    X_synthetic[elements] = globals()[tag_dict['target']][elements].iloc[index_2].tail(X_synthetic.shape[0]).values
 
-logging.info('source shape:' + str(globals()[tag_dict['source']].shape))
-logging.info('target shape:' + str(globals()[tag_dict['target']].shape))
-logging.info('X_synthetic shape:' + str(X_synthetic.shape))
+# logging.info('source shape:' + str(globals()[tag_dict['source']].shape))
+# logging.info('target shape:' + str(globals()[tag_dict['target']].shape))
+# logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 
 
 ### RQ1: Detecting target domain by synthetic model
