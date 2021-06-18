@@ -162,7 +162,7 @@ def data_loader (source, target):
     Y = np.array(Y)
     Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
-    return X, Y
+    return X, Y, tag_dict
 
 
 def temporalize(X, y, lookback):
@@ -179,7 +179,7 @@ def temporalize(X, y, lookback):
     return output_X, output_y
 
 
-X, Y = data_loader(sys.argv[1], sys.argv[2])
+X, Y, tag_dict = data_loader(sys.argv[1], sys.argv[2])
 
 logging.info('source shape:' + str(Y.shape))
 logging.info('target shape:' + str(X.shape))
