@@ -275,8 +275,8 @@ def get_synthetic_data (data, lstm_model):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
-    data = data.drop(columns=drop_list)
-    target_pd = pd.DataFrame(target_normalizer.transform(data))
+    target_pd = data.drop(columns=drop_list)
+    target_pd = pd.DataFrame(target_normalizer.transform(target_pd))
 
     target_np, _ = temporalize(X = target_pd.values, 
                                     y = np.zeros(target_pd.shape[0]), 
