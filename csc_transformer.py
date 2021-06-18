@@ -289,7 +289,11 @@ def get_synthetic_data (data, lstm_model):
 
     synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
-    synthetic_source_pd['datetime'] = data['datetime']
+
+    print(list(synthetic_source_pd))
+    print(len(synthetic_source_pd), len(data))
+
+    synthetic_source_pd['datetime'] = data['datetime'].values
 
     return synthetic_source_pd
 
