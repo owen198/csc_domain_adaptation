@@ -450,7 +450,7 @@ target_score, target_date = get_score(target_validation,
 
                                        
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
-N=len(target_score)
+N=min(len(target_score), len(source_score), len(rq1_score), len(rq2_score))
 
 
 logging.info('target score shape:' + str(len(target_score)))
@@ -458,10 +458,10 @@ logging.info('source score shape:' + str( len(source_score)))
 logging.info('rq1 score shape:' + str( len(rq1_score)))
 logging.info('rq2 score shape:' + str( len(rq2_score)))
 
-rq1_rmse = mean_squared_error (rq1_score[-N:], target_score, squared=False)
-rq1_cv_rmse = mean_squared_error (target_score_cv, target_score, squared=False)
-rq2_rmse = mean_squared_error (rq2_score, target_score[-N:], squared=False)
-rq2_cv_rmse = mean_squared_error (source_score_cv, source_score, squared=False)
+rq1_rmse = mean_squared_error (rq1_score[-N:], target_score[-N:], squared=False)
+rq1_cv_rmse = mean_squared_error (target_score_cv[-N:], target_score[-N:], squared=False)
+rq2_rmse = mean_squared_error (rq2_score[-N:], target_score[-N:], squared=False)
+rq2_cv_rmse = mean_squared_error (source_score_cv[-N:], source_score[-N:], squared=False)
 
 
 # rq2
