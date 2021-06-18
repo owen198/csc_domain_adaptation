@@ -270,13 +270,13 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def get_synthetic_data (data, lstm_model):
+def get_synthetic_data (data, lstm_model, normalizer):
     logging.info('get_synthetic_data')
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
     target_pd = data.drop(columns=drop_list)
-    target_pd = pd.DataFrame(target_normalizer.transform(target_pd))
+    target_pd = pd.DataFrame(normalizer.transform(target_pd))
 
     target_np, _ = temporalize(X = target_pd.values, 
                                     y = np.zeros(target_pd.shape[0]), 
@@ -284,6 +284,8 @@ def get_synthetic_data (data, lstm_model):
 
     synthetic_np = lstm_model.predict(target_np, verbose=0)
     synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_np])
+
+    print(list(data))
 
     synthetic_pd['datetime'] = data['datetime'].tail(len(synthetic_pd)).values
 
@@ -392,7 +394,7 @@ logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
-X_synthetic = get_synthetic_data(target_validation, lstm_model)
+X_synthetic = get_synthetic_data(target_validation, lstm_model, target_normalizer)
 
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 logging.info('X_source shape:' + str(source_validation.shape))
