@@ -242,13 +242,13 @@ def plot_score (score_list, date_list, tag):
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
 
-    tag_pd = pd.read_csv('csc_w4.csv')
 
     score_list = []
     date_list = []
     delta = datetime.timedelta(days=1)
 
-    
+    drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
+
     while start_date <= end_date:
 
         validation_df = data_df[(data_df['datetime'] > start_date) & 
@@ -473,6 +473,12 @@ target_score, target_date = get_score(target_validation,
                                        
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
 N=len(target_score)
+
+
+logging.info('target score shape:' + str(target_score.shape))
+logging.info('source score shape:' + str(source_score.shape))
+logging.info('rq1 score shape:' + str(rq1_score.shape))
+logging.info('rq2 score shape:' + str(rq2_score.shape))
 
 rq1_rmse = mean_squared_error (rq1_score[-N:], target_score, squared=False)
 rq1_cv_rmse = mean_squared_error (target_score_cv, target_score, squared=False)
