@@ -177,11 +177,11 @@ def temporalize (X, y, lookback):
 def lstm_ae():
     # define model
     model = Sequential(name='test')
-    model.add(LSTM(units_layer_1, activation='tanh', input_shape=(timesteps,n_features), return_sequences=True))
-    model.add(LSTM(units_layer_2, activation='tanh', return_sequences=False))
+    model.add(LSTM(units_layer_1, activation='relu', input_shape=(timesteps,n_features), return_sequences=True))
+    model.add(LSTM(units_layer_2, activation='relu', return_sequences=False))
     model.add(RepeatVector(timesteps))
-    model.add(LSTM(units_layer_2, activation='tanh', return_sequences=True))
-    model.add(LSTM(units_layer_1, activation='tanh', return_sequences=True))
+    model.add(LSTM(units_layer_2, activation='relu', return_sequences=True))
+    model.add(LSTM(units_layer_1, activation='relu', return_sequences=True))
     model.add(TimeDistributed(Dense(n_features)))
     model.compile(optimizer='adam', loss='mse', metrics=[metrics.RootMeanSquaredError()])
     model.summary()
