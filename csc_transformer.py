@@ -275,17 +275,11 @@ def get_synthetic_data (data, lstm_model):
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
     source_test_pd = data.drop(columns=drop_list)
-
-    #index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
-
-    source_test_pd = pd.DataFrame(source_normalizer.transform(source_test_pd))
+    source_test_pd = pd.DataFrame(target_normalizer.transform(source_test_pd))
 
     source_test_np, _ = temporalize(X = source_test_pd.values, 
                                     y = np.zeros(source_test_pd.shape[0]), 
                                     lookback = timesteps)
-
-    #source_test_np = np.array(source_test_np)
-    #source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
 
     synthetic_source = lstm_model.predict(source_test_np, verbose=0)
     synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
@@ -378,7 +372,6 @@ def lstm_ae_2():
 
 
 source_training, target_training, source_validation, target_validation, tag_dict = data_loader (sys.argv[1], sys.argv[2])
-#shape_min, shape_max = get_shapes (source_training, target_training)
 
 normalizer = preprocessing.MinMaxScaler()
 source_normalizer = normalizer.fit(source_training)
@@ -391,14 +384,13 @@ X_target = pd.DataFrame(target_normalizer.transform(target_training))
 
 X, Y = resample(X_source, X_target)
 
-#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
 X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
 Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
 
 logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
-lstm_model = training_lstm_model(Y, X)
+lstm_model = training_lstm_model(X, Y)
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
 
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
@@ -452,7 +444,6 @@ source_score, source_date = get_score(source_validation,
                                             source_normalizer,
                                             model_source)
 
-
 target_score, target_date = get_score(target_validation, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
@@ -461,7 +452,7 @@ target_score, target_date = get_score(target_validation,
 
                                        
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
-N=min(len(target_score), len(source_score), len(rq1_score), len(rq2_score), len(source_score_syn), len(syn_score))
+N = min(len(target_score), len(source_score), len(rq1_score), len(rq2_score), len(source_score_syn), len(syn_score))
 
 
 logging.info('target score shape:' + str(len(target_score)))
