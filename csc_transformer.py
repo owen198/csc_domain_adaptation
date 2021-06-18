@@ -285,8 +285,6 @@ def get_synthetic_data (data, lstm_model, normalizer):
     synthetic_np = lstm_model.predict(target_np, verbose=0)
     synthetic_pd = pd.DataFrame.from_records([i[0] for i in synthetic_np])
 
-    print(list(data))
-
     synthetic_pd['datetime'] = data['datetime'].tail(len(synthetic_pd)).values
 
     return synthetic_pd
