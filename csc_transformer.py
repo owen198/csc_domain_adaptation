@@ -182,7 +182,7 @@ def temporalize(X, y, lookback):
     return output_X, output_y
 
 
-X, Y, tag_dict, drop_list = data_loader(sys.argv[1], sys.argv[2])
+X, Y, tag_dict, drop_list, shape_min= data_loader(sys.argv[1], sys.argv[2])
 
 
 
