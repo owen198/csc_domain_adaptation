@@ -415,11 +415,22 @@ rq1_score, rq1_date = get_score(source_validation,
                                             source_normalizer,
                                             model_synthetic)    
 
+source_score_syn, source_date_syn = get_score(source_validation, 
+                                            tag_dict['source_training_from'], 
+                                            tag_dict['source_end'], 
+                                            source_normalizer,
+                                            model_synthetic)    
+
 ### RQ2: Detecting target domain by synthetic model
 rq2_score, rq2_date = get_syntheic_score(X_synthetic, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            model_source)                                             
+                                            model_source)
+
+syn_score, syn_date = get_syntheic_score(X_synthetic, 
+                                            tag_dict['target_training_from'], 
+                                            tag_dict['target_end'], 
+                                            model_synthetic)             
 
 ## Cross-validation
 source_score_cv, source_date_cv = get_score(source_validation, 
@@ -450,7 +461,7 @@ target_score, target_date = get_score(target_validation,
 
                                        
 #sy_rmse = mean_squared_error(synthetic_score, source_score, squared=False)
-N=min(len(target_score), len(source_score), len(rq1_score), len(rq2_score))
+N=min(len(target_score), len(source_score), len(rq1_score), len(rq2_score), len(source_score_syn), len(syn_score))
 
 
 logging.info('target score shape:' + str(len(target_score)))
@@ -490,9 +501,13 @@ plot_score (target_score_cv,
             target_date_cv, 
             'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
+plot_score (source_score_syn, 
+            source_date_syn, 
+            'Detect ' + tag_dict['source'][-3:] +' (target)conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
-
-
+plot_score (syn_score, 
+            syn_date, 
+            'Detect synthetic conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
 
 
