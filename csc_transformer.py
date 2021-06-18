@@ -162,7 +162,10 @@ def data_loader (source, target):
     Y = np.array(Y)
     Y = Y.reshape(np.array(Y).shape[0], timesteps, n_features)
 
-    return X, Y, tag_dict, drop_list
+    logging.info('source shape (after temporalize):' + str(Y.shape))
+    logging.info('target shape (after temporalize):' + str(X.shape))
+
+    return X, Y, tag_dict, drop_list, shape_min
 
 
 def temporalize(X, y, lookback):
@@ -181,8 +184,6 @@ def temporalize(X, y, lookback):
 
 X, Y, tag_dict, drop_list = data_loader(sys.argv[1], sys.argv[2])
 
-logging.info('source shape:' + str(Y.shape))
-logging.info('target shape:' + str(X.shape))
 
 
 
@@ -358,9 +359,9 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def get_synthetic_data(source_test_pd, lstm_model, drop_list):
+def get_synthetic_data(data, lstm_model, drop_list, shape_min):
 
-    source_test_pd = source_test_pd.drop(columns=drop_list)
+    source_test_pd = data.drop(columns=drop_list)
 
     index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
 
@@ -412,7 +413,7 @@ def get_syntheic_score (data_df, start_date, end_date, prediction_model):
 
 
 lstm_model = training_lstm_model(X, Y)
-X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list)
+X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list, shape_min)
 #index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
 #X_synthetic = lstm_model.predict(X, verbose=0)
 #X_synthetic = pd.DataFrame.from_records([i[0] for i in X_synthetic])
