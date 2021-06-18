@@ -242,6 +242,8 @@ def plot_score (score_list, date_list, tag):
 
 def get_score (data_df, start_date, end_date, normalizer, prediction_model):
 
+    tag_pd = pd.read_csv('csc_w4.csv')
+
     score_list = []
     date_list = []
     delta = datetime.timedelta(days=1)
@@ -349,6 +351,8 @@ logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
+
+print(list(target_validation))
 
 X_synthetic = get_synthetic_data(target_validation, lstm_model)
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
