@@ -221,7 +221,6 @@ def training_lstm_model (input_data, output_data):
     return model
 
 def scorer_(Y_pred):
-    logging.info('scorer_')
     a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
     return a*100
 
