@@ -358,7 +358,7 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
         
     return score_list, date_list
 
-def get_synthetic_data(source_test_pd, lstm_model):
+def get_synthetic_data(source_test_pd, lstm_model, drop_list):
 
     source_test_pd = source_test_pd.drop(columns=drop_list)
 
