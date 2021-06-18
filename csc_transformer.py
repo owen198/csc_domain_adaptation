@@ -174,37 +174,6 @@ def temporalize (X, y, lookback):
 
     return output_X, output_y
 
-source_training, target_training, source_validation, source_validation = data_loader (sys.argv[1], sys.argv[2])
-#shape_min, shape_max = get_shapes (source_training, target_training)
-
-normalizer = preprocessing.MinMaxScaler()
-source_normalizer = normalizer.fit(source_training)
-
-normalizer = preprocessing.MinMaxScaler()
-target_normalizer = normalizer.fit(target_training)
-
-X_source = pd.DataFrame(source_normalizer.transform(source_training))
-X_target = pd.DataFrame(target_normalizer.transform(target_training))
-
-X, Y = resample(X_source, X_target)
-
-#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
-X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
-Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
-
-logging.info('source shape (after temporalize):' + str(Y.shape))
-logging.info('target shape (after temporalize):' + str(X.shape))
-
-
-
-
-#X, Y, tag_dict, drop_list, shape_min = data_loader(sys.argv[1], sys.argv[2])
-
-
-
-
-
-
 def lstm_ae():
     # define model
     model = Sequential(name='test')
@@ -251,6 +220,144 @@ def training_lstm_model (input_data, output_data):
     plt.show()
 
     return model
+
+
+
+def scorer_(Y_pred):
+    a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
+    return a*100
+
+def plot_score (score_list, date_list, tag):
+
+    fig, ax = plt.subplots(figsize=(10, 3))
+    plt.xticks(rotation=45)
+    ax.plot(date_list, score_list, '.-')
+    ax.set(xlabel='date', ylabel='score', title=tag)
+    ax.grid()
+    plt.ylim(0, 100)
+    plt.tight_layout()
+
+    print(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png')
+    fig.savefig('results/'+filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png', dpi=300)
+    plt.show()
+
+def get_score (data_df, start_date, end_date, normalizer, prediction_model):
+
+    score_list = []
+    date_list = []
+    delta = datetime.timedelta(days=1)
+
+    
+    while start_date <= end_date:
+
+        validation_df = data_df[(data_df['datetime'] > start_date) & 
+                                (data_df['datetime'] <= start_date + delta)]
+
+        #print(validation_df.shape, start_date)
+
+        
+        if validation_df.shape[0] > 0:
+
+            validation_df_score = validation_df.drop(columns=drop_list)
+            validation_df_score = normalizer.transform(validation_df_score)
+            validation_df_score = prediction_model.predict(validation_df_score)
+
+            score_list.append(scorer_(validation_df_score))
+            date_list.append(start_date)
+
+        start_date += delta
+        
+    return score_list, date_list
+
+def get_synthetic_data (data, lstm_model):
+
+    drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
+
+    source_test_pd = data.drop(columns=drop_list)
+
+    #index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
+
+    source_test_pd = pd.DataFrame(source_normalizer.transform(source_test_pd))
+
+    source_test_np, _ = temporalize(X = source_test_pd.values, 
+                                    y = np.zeros(source_test_pd.shape[0]), 
+                                    lookback = timesteps)
+
+    #source_test_np = np.array(source_test_np)
+    #source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
+
+    synthetic_source = lstm_model.predict(source_test_np, verbose=0)
+    synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
+
+    return synthetic_source_pd
+
+def training_ocsvm_models (X_source, X_target, X_synthetic):
+
+    model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
+    model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
+    model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_synthetic)
+
+    return model_source, model_target, model_synthetic
+
+def get_syntheic_score (data_df, start_date, end_date, prediction_model):
+
+    score_list = []
+    date_list = []
+    delta = datetime.timedelta(days=1)
+
+    while start_date <= end_date:
+
+        validation_df = data_df[(data_df['datetime'] > start_date) & 
+                                (data_df['datetime'] <= start_date + delta)]
+
+        if validation_df.shape[0] > 0:
+
+            validation_df_score = validation_df.drop(columns=drop_list)
+            validation_df_score = prediction_model.predict(validation_df_score)
+
+            score_list.append(scorer_(validation_df_score))
+            date_list.append(start_date)
+
+
+        start_date += delta
+        
+    return score_list, date_list
+
+
+
+
+
+source_training, target_training, source_validation, target_validation = data_loader (sys.argv[1], sys.argv[2])
+#shape_min, shape_max = get_shapes (source_training, target_training)
+
+normalizer = preprocessing.MinMaxScaler()
+source_normalizer = normalizer.fit(source_training)
+
+normalizer = preprocessing.MinMaxScaler()
+target_normalizer = normalizer.fit(target_training)
+
+X_source = pd.DataFrame(source_normalizer.transform(source_training))
+X_target = pd.DataFrame(target_normalizer.transform(target_training))
+
+X, Y = resample(X_source, X_target)
+
+#X, y = temporalize(X = timeseries, y = np.zeros(len(timeseries)), lookback = timesteps)
+X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
+Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
+
+logging.info('source shape (after temporalize):' + str(Y.shape))
+logging.info('target shape (after temporalize):' + str(X.shape))
+
+lstm_model = training_lstm_model(X, Y)
+
+X_synthetic = get_synthetic_data(target_validation, lstm_model)
+logging.info('X_synthetic shape:' + str(X_synthetic.shape))
+
+
+
+
+
+
 
 '''
 if retrain:
@@ -329,106 +436,7 @@ if retrain:
 
 ### Initializing the validation
 
-def scorer_(Y_pred):
-    a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
-    return a*100
 
-def plot_score (score_list, date_list, tag):
-
-    fig, ax = plt.subplots(figsize=(10, 3))
-    plt.xticks(rotation=45)
-    ax.plot(date_list, score_list, '.-')
-    ax.set(xlabel='date', ylabel='score', title=tag)
-    ax.grid()
-    plt.ylim(0, 100)
-    plt.tight_layout()
-
-    print(filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png')
-    fig.savefig('results/'+filename+'-'+tag.split(' ')[1]+'-'+tag.split(' ')[5]+'.png', dpi=300)
-    plt.show()
-
-def get_score (data_df, start_date, end_date, normalizer, prediction_model):
-
-    score_list = []
-    date_list = []
-    delta = datetime.timedelta(days=1)
-
-    
-    while start_date <= end_date:
-
-        validation_df = data_df[(data_df['datetime'] > start_date) & 
-                                (data_df['datetime'] <= start_date + delta)]
-
-        #print(validation_df.shape, start_date)
-
-        
-        if validation_df.shape[0] > 0:
-
-            validation_df_score = validation_df.drop(columns=drop_list)
-            validation_df_score = normalizer.transform(validation_df_score)
-            validation_df_score = prediction_model.predict(validation_df_score)
-
-            score_list.append(scorer_(validation_df_score))
-            date_list.append(start_date)
-
-        start_date += delta
-        
-    return score_list, date_list
-
-def get_synthetic_data(data, lstm_model, drop_list, shape_min):
-
-    source_test_pd = data.drop(columns=drop_list)
-
-    index_2 = sorted(random.sample(range(0, source_test_pd.shape[0]), shape_min))
-
-    source_test_pd = pd.DataFrame(source_normalizer.transform(source_test_pd)).iloc[index_2]
-
-    source_test_np, _ = temporalize(X = source_test_pd.values, 
-                                    y = np.zeros(source_test_pd.shape[0]), 
-                                    lookback = timesteps)
-
-    source_test_np = np.array(source_test_np)
-    source_test_np = source_test_np.reshape(source_test_np.shape[0], timesteps, n_features)
-
-    synthetic_source = lstm_model.predict(source_test_np, verbose=0)
-    synthetic_source_pd = pd.DataFrame.from_records([i[0] for i in synthetic_source])
-
-    return synthetic_source_pd, index_2
-
-def training_ocsvm_models (X_source, X_target, X_synthetic):
-
-    model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
-    model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
-    model_synthetic = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_synthetic)
-
-    return model_source, model_target, model_synthetic
-
-def get_syntheic_score (data_df, start_date, end_date, prediction_model):
-
-    score_list = []
-    date_list = []
-    delta = datetime.timedelta(days=1)
-
-    while start_date <= end_date:
-
-        validation_df = data_df[(data_df['datetime'] > start_date) & 
-                                (data_df['datetime'] <= start_date + delta)]
-
-        if validation_df.shape[0] > 0:
-
-            validation_df_score = validation_df.drop(columns=drop_list)
-            validation_df_score = prediction_model.predict(validation_df_score)
-
-            score_list.append(scorer_(validation_df_score))
-            date_list.append(start_date)
-
-
-        start_date += delta
-        
-    return score_list, date_list
-
-
-lstm_model = training_lstm_model(X, Y)
 X_synthetic, index_2 = get_synthetic_data(globals()[tag_dict['target']], lstm_model, drop_list, shape_min)
 #index_2 = sorted(random.sample(range(0, X_target.shape[0]), shape_min))
 #X_synthetic = lstm_model.predict(X, verbose=0)
