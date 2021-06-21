@@ -380,7 +380,7 @@ source_normalizer = normalizer.fit(source_training)
 normalizer = preprocessing.MinMaxScaler()
 target_normalizer = normalizer.fit(target_training)
 
-X_source = pd.DataFrame(target_normalizer.transform(source_training))
+X_source = pd.DataFrame(source_normalizer.transform(source_training))
 X_target = pd.DataFrame(target_normalizer.transform(target_training))
 
 X, Y = resample(X_source, X_target)
@@ -392,7 +392,7 @@ logging.info('source shape (after temporalize):' + str(Y.shape))
 logging.info('target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
-X_synthetic = get_synthetic_data(target_validation, lstm_model, target_normalizer)
+X_synthetic = get_synthetic_data(target_validation, lstm_model, source_normalizer)
 
 logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 logging.info('X_source shape:' + str(source_validation.shape))
@@ -405,13 +405,13 @@ model_source, model_target, model_synthetic = training_ocsvm_models (X_source, X
 rq1_score, rq1_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            target_normalizer,
+                                            source_normalizer,
                                             model_synthetic)    
 
 source_score_syn, source_date_syn = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            target_normalizer,
+                                            source_normalizer,
                                             model_synthetic)    
 
 ### RQ2: Detecting target domain by synthetic model
@@ -429,7 +429,7 @@ syn_score, syn_date = get_syntheic_score(X_synthetic,
 source_score_cv, source_date_cv = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            target_normalizer,
+                                            source_normalizer,
                                             model_target)
 
 target_score_cv, target_date_cv = get_score(target_validation, 
@@ -442,7 +442,7 @@ target_score_cv, target_date_cv = get_score(target_validation,
 source_score, source_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
-                                            target_normalizer,
+                                            source_normalizer,
                                             model_source)
 
 target_score, target_date = get_score(target_validation, 
