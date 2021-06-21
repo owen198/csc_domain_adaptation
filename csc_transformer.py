@@ -228,10 +228,11 @@ def scorer_(Y_pred):
 def plot_score (score_list, date_list, tag):
     logging.info('plot_score')
 
-    fig, ax = plt.subplots(figsize=(10, 3))
+    fig, ax = plt.subplots(figsize=(10, 2.5))
     plt.xticks(rotation=45)
     ax.plot(date_list, score_list, '.-')
-    ax.set(xlabel='date', ylabel='score', title=tag)
+    #ax.set(xlabel='date', ylabel='score', title=tag)
+    ax.set(xlabel='date', ylabel='score')
     ax.grid()
     plt.ylim(0, 100)
     plt.tight_layout()
