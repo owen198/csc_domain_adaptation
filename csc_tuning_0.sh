@@ -4,7 +4,6 @@
 # W4662FM0606
 python csc_transformer.py W4662FM0606 W4662FM0605 300 2 468 32 0
 python csc_transformer.py W4662FM0606 W4633070102 300 2 468 32 0
-python csc_transformer.py W4662FM0606 W4633080500 300 2 468 32 0
 python csc_transformer.py W4662FM0606 W4633080200 300 2 468 32 0
 python csc_transformer.py W4662FM0606 W4662FM0400 300 2 468 32 0
 python csc_transformer.py W4662FM0606 W4662FM0507 300 2 468 32 0
@@ -78,7 +77,6 @@ python csc_transformer.py W4662FM0606 W4662FM0507 300 2 468 32 0
 # W4633070102
 python csc_transformer.py W4633070102 W4662FM0605 300 2 468 32 0
 python csc_transformer.py W4633070102 W4662FM0606 300 2 468 32 0
-python csc_transformer.py W4633070102 W4633080500 300 2 468 32 0
 python csc_transformer.py W4633070102 W4633080200 300 2 468 32 0
 python csc_transformer.py W4633070102 W4662FM0400 300 2 468 32 0
 python csc_transformer.py W4633070102 W4662FM0507 300 2 468 32 0
