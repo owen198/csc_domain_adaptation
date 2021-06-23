@@ -509,14 +509,16 @@ plot_score (syn_score,
 feature_index = 206
 duration = 26000
 interval = 100
-fig, ax = plt.subplots(figsize=(10,5))
+fig, ax = plt.subplots(figsize=(6,2))
 
-ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.')
-ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.')
-ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.')
+ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue')
+ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.', color='tab:red')
+ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.', color='tab:green')
 
 ax.legend()
 ax.grid(True)
+plt.xlabel('timestamp')
+plt.ylabel('value')
 plt.tight_layout()
 
 plt.savefig('results/'+filename + '-' +'realdata.png', dpi=300)
@@ -542,7 +544,7 @@ x_min, x_max = X_synthetic_dist.min(0), X_synthetic_dist.max(0)
 X_norm = (X_synthetic_dist-x_min) / (x_max-x_min)  #Normalize
 X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
-fig, ax = plt.subplots(figsize=(10,5))
+fig, ax = plt.subplots(figsize=(6,2))
 
 ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
 ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
