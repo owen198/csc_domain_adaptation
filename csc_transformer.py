@@ -577,7 +577,7 @@ fig, ax = plt.subplots(figsize=(6,2))
 a = X_target[feature_index].head(duration).tail(interval)
 b = X_source[feature_index].head(duration).tail(interval)
 c = X_synthetic[feature_index].head(duration).tail(interval)
-bins=np.histogram(np.hstack((a, b, c)), bins=40)[1] #get the bin edges
+bins=np.histogram(np.hstack((a, b, c)), bins=80)[1] #get the bin edges
 
 plt.hist(a, alpha=0.5, label='target', color='tab:blue', bins=bins)
 plt.hist(b, alpha=0.5, label='source', color='tab:red', bins=bins)
