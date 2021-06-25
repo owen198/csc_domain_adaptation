@@ -513,9 +513,12 @@ plot_score (syn_score,
 
 
 ### show the difference between real data and synthetic data
-feature_index = 206
-duration = 26000
-interval = 100
+# feature_index = 206
+# duration = 26000
+# interval = 100
+feature_index = 1
+duration = -1
+interval = -1
 fig, ax = plt.subplots(figsize=(6,2))
 
 ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue')
