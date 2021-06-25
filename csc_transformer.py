@@ -402,15 +402,15 @@ logging.info('X_synthetic shape:' + str(X_synthetic.shape))
 logging.info('X_source shape:' + str(source_validation.shape))
 logging.info('X_target shape:' + str(target_validation.shape))
 
-normalizer = preprocessing.MinMaxScaler()
-synthetic_normalizer = normalizer.fit(X_synthetic)
+#normalizer = preprocessing.MinMaxScaler()
+#synthetic_normalizer = normalizer.fit(X_synthetic)
 
 model_source, model_target, model_synthetic = training_ocsvm_models (pd.DataFrame(source_normalizer.transform(source_training)), 
                                                                         pd.DataFrame(target_normalizer.transform(target_training)), 
                                                                         pd.DataFrame(synthetic_normalizer(X_synthetic.drop(columns=['datetime']))))
 
 
-### RQ1: Detecting target domain by synthetic model
+### RQ1: Detecting source domain by synthetic model
 rq1_score, rq1_date = get_score(source_validation, 
                                             tag_dict['source_training_from'], 
                                             tag_dict['source_end'], 
@@ -423,18 +423,18 @@ source_score_syn, source_date_syn = get_score(source_validation,
                                             source_normalizer,
                                             model_synthetic)    
 
-### RQ2: Detecting target domain by synthetic model
+### RQ2: Detecting target->synthetic domain by source model
 rq2_score, rq2_date = get_score (X_synthetic, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            synthetic_normalizer,
+                                            source_normalizer,
                                             model_source)
 
 syn_score, syn_date = get_score (X_synthetic, 
                                             tag_dict['target_training_from'], 
                                             tag_dict['target_end'], 
-                                            source_date_syn,
-                                            model_synthetic)             
+                                            source_normalizer,
+                                            model_source)             
 
 ## Cross-validation
 source_score_cv, source_date_cv = get_score(source_validation, 
