@@ -59,7 +59,7 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
 
 
 if os.path.isfile('results/'+filename + '-' +'distribution.png'):
-    logging.info(filename + '-' +'distribution.png' + ' exists, exit')
+    logging.info(filename + '-' +'hist.png' + ' exists, exit')
     exit()
 
 
@@ -505,7 +505,6 @@ plot_score (syn_score,
 
 
 ### show the difference between real data and synthetic data
-
 feature_index = 206
 duration = 26000
 interval = 100
@@ -546,9 +545,9 @@ X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
 fig, ax = plt.subplots(figsize=(6,2))
 
-ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
-ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
-ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
+ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.3, label='source', color='tab:blue')
+ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.3, label='target', color='tab:red')
+ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.3, label='synthetic', color='tab:green')
 
 ax.legend()
 ax.grid(True)
@@ -556,4 +555,29 @@ ax.grid(True)
 #plt.ylim(0, 1)
 #plt.xlim(0, 1)
 plt.savefig('results/'+filename + '-' +'distribution.png', dpi=300)
+plt.show()
+
+
+
+
+### show histogram ###
+fig, ax = plt.subplots(figsize=(6,2))
+
+#ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
+#ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
+#ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
+
+plt.hist(X_target[feature_index].head(duration).tail(interval), alpha=0.5, label='target', color='tab:blue', bins=100)
+plt.hist(X_source[feature_index].head(duration).tail(interval), alpha=0.5, label='source', color='tab:red', bins=100)
+plt.hist(X_synthetic[feature_index].head(duration).tail(interval), alpha=0.5, label='synthetic', color='tab:green', bins=100)
+
+plt.xlabel('values')
+plt.ylabel('frequency')
+
+ax.legend()
+ax.grid(True)
+
+#plt.ylim(0, 1)
+#plt.xlim(0, 1)
+plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
 plt.show()
