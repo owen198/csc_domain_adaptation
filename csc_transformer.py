@@ -58,9 +58,9 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
-if os.path.isfile('results/'+filename + '-' +'hist.png'):
-    logging.info(filename + '-' +'hist.png' + ' exists, exit')
-    exit()
+# if os.path.isfile('results/'+filename + '-' +'hist.png'):
+#     logging.info(filename + '-' +'hist.png' + ' exists, exit')
+#     exit()
 
 
 n_features = 390
