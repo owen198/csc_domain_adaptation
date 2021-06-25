@@ -384,8 +384,8 @@ target_normalizer = normalizer.fit(target_training)
 #X_source = pd.DataFrame(source_normalizer.transform(source_training))
 #X_target = pd.DataFrame(target_normalizer.transform(target_training))
 
-X_source = source_training
-X_target = target_training
+X_source = pd.DataFrame(source_training)
+X_target = pd.DataFrame(target_training)
 
 X, Y = resample(X_source, X_target)
 
