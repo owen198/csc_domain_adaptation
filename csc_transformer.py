@@ -513,12 +513,10 @@ plot_score (syn_score,
 
 
 ### show the difference between real data and synthetic data
-# feature_index = 206
-# duration = 26000
-# interval = 100
+#feature_index = 206
 feature_index = 1
-duration = -1
-interval = -1
+duration = 26000
+interval = 100
 fig, ax = plt.subplots(figsize=(6,2))
 
 ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue')
@@ -577,9 +575,9 @@ fig, ax = plt.subplots(figsize=(6,2))
 #ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
 #ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
 #ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
-a = X_target[feature_index].head(duration).tail(interval)
-b = X_source[feature_index].head(duration).tail(interval)
-c = X_synthetic[feature_index].head(duration).tail(interval)
+a = X_target[feature_index]
+b = X_source[feature_index]
+c = X_synthetic[feature_index]
 bins=np.histogram(np.hstack((a, b, c)), bins=80)[1] #get the bin edges
 
 plt.hist(a, alpha=0.5, label='target', color='tab:blue', bins=bins)
