@@ -426,12 +426,12 @@ source_score_syn, source_date_syn = get_score(source_validation,
 ### RQ2: Detecting target->synthetic domain by source model
 rq2_score, rq2_date = get_syntheic_score (X_synthetic, 
                                             tag_dict['target_training_from'], 
-                                            tag_dict['target_end']
+                                            tag_dict['target_end'],
                                             model_source)
 
 syn_score, syn_date = get_syntheic_score (X_synthetic, 
                                             tag_dict['target_training_from'], 
-                                            tag_dict['target_end']
+                                            tag_dict['target_end'],
                                             model_source)             
 
 ## Cross-validation
