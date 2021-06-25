@@ -549,7 +549,7 @@ ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.3, label=
 ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.3, label='target', color='tab:red')
 ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.3, label='synthetic', color='tab:green')
 
-ax.legend()
+ax.legend(loc='best')
 ax.grid(True)
 
 #plt.ylim(0, 1)
@@ -566,10 +566,14 @@ fig, ax = plt.subplots(figsize=(6,2))
 #ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
 #ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
 #ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
+a = X_target[feature_index].head(duration).tail(interval)
+b = X_source[feature_index].head(duration).tail(interval)
+c = X_synthetic[feature_index].head(duration).tail(interval)
+bins=np.histogram(np.hstack((a, b, c)), bins=40)[1] #get the bin edges
 
-plt.hist(X_target[feature_index].head(duration).tail(interval), alpha=0.5, label='target', color='tab:blue', bins=100)
-plt.hist(X_source[feature_index].head(duration).tail(interval), alpha=0.5, label='source', color='tab:red', bins=100)
-plt.hist(X_synthetic[feature_index].head(duration).tail(interval), alpha=0.5, label='synthetic', color='tab:green', bins=100)
+plt.hist(a, alpha=0.5, label='target', color='tab:blue', bins=bins)
+plt.hist(b, alpha=0.5, label='source', color='tab:red', bins=bins)
+plt.hist(c, alpha=0.5, label='synthetic', color='tab:green', bins=bins)
 
 plt.xlabel('values')
 plt.ylabel('frequency')
