@@ -520,9 +520,9 @@ duration = 26000
 interval = 100
 fig, ax = plt.subplots(figsize=(6,2))
 
-ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue')
-ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.', color='tab:red')
-ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.', color='tab:green')
+ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue', linewidth=1)
+ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.', color='tab:red', linewidth=1)
+ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.', color='tab:green', linewidth=1)
 
 ax.legend()
 ax.grid(True)
