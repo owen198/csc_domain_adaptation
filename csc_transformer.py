@@ -53,17 +53,15 @@ os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
-gpu_options = tensorflow.GPUOptions(per_process_gpu_memory_fraction=0.333)
-sess = tensorflow.Session(config=tensorflow.ConfigProto(gpu_options=gpu_options))
 
 
 filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
 
 
-# if os.path.isfile('results/'+filename + '-' +'hist.png'):
-#     logging.info(filename + '-' +'hist.png' + ' exists, exit')
-#     exit()
+if os.path.isfile('results/'+filename + '-' +'hist.png'):
+    logging.info(filename + '-' +'hist.png' + ' exists, exit')
+    exit()
 
 
 n_features = 390
