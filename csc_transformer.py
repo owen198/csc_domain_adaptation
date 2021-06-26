@@ -38,7 +38,6 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
-
 logging.info('argv:' + str(sys.argv))
 
 source = sys.argv[1]
@@ -49,10 +48,14 @@ units_layer_1 = int(sys.argv[5])
 units_layer_2 = int(sys.argv[6])
 gpu_num = int(sys.argv[7])
 
+# Setup GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
 gpus = tensorflow.test.gpu_device_name()
+gpu_options = tensorflow.GPUOptions(per_process_gpu_memory_fraction=0.333)
+sess = tensorflow.Session(config=tensorflow.ConfigProto(gpu_options=gpu_options))
+
 
 filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
                     str(timesteps)+'_'+str(units_layer_1)+'_'+str(units_layer_2)
@@ -591,6 +594,6 @@ ax.legend()
 ax.grid(True)
 
 #plt.ylim(0, 1)
-#plt.xlim(0, 1)
+plt.xlim(0, 1)
 plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
 plt.show()
