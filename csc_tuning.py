@@ -1,8 +1,9 @@
 import itertools
+import sys
 import os
 
-source_list = ['W4662FM0606', 'W4662FM0400']
-target_list = ['W4662FM0606', 'W4662FM0400']
+source_list = sys.argv[1]
+target_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W4662FM0605', 'W4662FM0606']
 
 epoch_list = range(20, 200+20, 20)
 timestep_list = range(4, 32+4, 4)
@@ -20,7 +21,7 @@ for hp in hp_list:
     timesteps = str(hp[3])
     layer1 = str(hp[4])
     layer2 = str(hp[5])
-    gpu = str(0)
+    gpu = int(sys.argv[2])
 
     if (source != target) and (layer1 > layer2):
 
