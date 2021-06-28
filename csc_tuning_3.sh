@@ -1,33 +1,33 @@
-# W4662FM0507
-python csc_transformer.py W4662FM0507 W4662FM0605 20 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633070102 20 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633080200 20 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0400 20 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0606 20 4 128 64 1
+# W4662FM0400
+python csc_transformer.py W4662FM0400 W4662FM0605 20 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633070102 20 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633080200 20 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0606 20 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0507 20 4 128 64 1
 
-python csc_transformer.py W4662FM0507 W4662FM0605 40 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633070102 40 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633080200 40 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0400 40 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0606 40 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0605 40 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633070102 40 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633080200 40 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0507 40 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0606 40 4 128 64 1
 
-python csc_transformer.py W4662FM0507 W4662FM0605 60 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633070102 60 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633080200 60 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0400 60 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0606 60 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0605 60 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633070102 60 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633080200 60 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0507 60 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0606 60 4 128 64 1
 
-python csc_transformer.py W4662FM0507 W4662FM0605 80 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633070102 80 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633080200 80 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0400 80 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0606 80 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0605 80 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633070102 80 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633080200 80 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0507 80 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0606 80 4 128 64 1
 
-python csc_transformer.py W4662FM0507 W4662FM0605 100 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633070102 100 4 128 64 1
-python csc_transformer.py W4662FM0507 W4633080200 100 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0400 100 4 128 64 1
-python csc_transformer.py W4662FM0507 W4662FM0606 100 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0605 100 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633070102 100 4 128 64 1
+python csc_transformer.py W4662FM0400 W4633080200 100 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0507 100 4 128 64 1
+python csc_transformer.py W4662FM0400 W4662FM0606 100 4 128 64 1
 
 # python csc_transformer.py W4662FM0507 W4662FM0605 300 2 468 32 1
 # python csc_transformer.py W4662FM0507 W4633070102 300 2 468 32 1
