@@ -485,10 +485,13 @@ record_pd.loc[len(record_pd)] = record_list
 try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1'].values[0]
     rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2'].values[0]
+    
 
     if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
         logging.info('get better results')
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+    else:
+        logging.info('performance not good')
 except:
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     logging.info('record not found')
