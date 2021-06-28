@@ -486,6 +486,8 @@ try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1'].values[0]
     rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2'].values[0]
     
+    logging.info('rq1_record='+str(rq1_record))
+    logging.info('rq2_record='+str(rq2_record))
 
     if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
         logging.info('get better results')
