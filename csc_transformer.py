@@ -483,32 +483,31 @@ record_list = [source, target,
                 epoch, timesteps, units_layer_1, units_layer_2, 
                 rq1_rmse, rq1_score, rq1_date,
                 rq2_rmse, rq2_score, rq2_date]
-record_pd.loc[len(record_pd)] = record_list
-record_pd.to_csv('csc_record.csv', mode='w+', index=False)
-'''
+
 try:
-    rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1'].values[0]
-    rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2'].values[0]
+    rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1_rmse'].values[0]
+    rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2_rmse'].values[0]
     
     logging.info('rq1_record='+str(rq1_record))
     logging.info('rq2_record='+str(rq2_record))
 
     if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
         
-        logging.info('get better results')
-
-        record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
+        logging.info('get better results, drop existing recoder')
+        # drop
+        drop_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+        record_pd = record_pd.drop(index=drop_index)
+        # insert
         record_pd.loc[len(record_pd)] = record_list
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
         logging.info('performance not good')
 except:
-    record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
     record_pd.loc[len(record_pd)] = record_list
 
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     logging.info('record not found')
-'''
+
 # rq2
 plot_score (rq2_score, 
             rq2_date, 
