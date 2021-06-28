@@ -476,6 +476,8 @@ rq1_cv_rmse = mean_squared_error (target_score_cv[-N:], target_score[-N:], squar
 rq2_rmse = mean_squared_error (rq2_score[-N:], target_score[-N:], squared=False)
 rq2_cv_rmse = mean_squared_error (source_score_cv[-N:], source_score[-N:], squared=False)
 
+def Average(lst):
+    return sum(lst) / len(lst)
 
 # log optimun record
 record_pd = pd.read_csv('csc_record.csv')
@@ -491,7 +493,7 @@ try:
     logging.info('rq1_record='+str(rq1_record))
     logging.info('rq2_record='+str(rq2_record))
 
-    if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
+    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and ((Average(rq1_score) > 1) or (Average(rq2_score) > 1)):
         
         logging.info('get better results, drop existing recoder')
         # drop
