@@ -471,11 +471,18 @@ logging.info('source score shape:' + str( len(source_score)))
 logging.info('rq1 score shape:' + str( len(rq1_score)))
 logging.info('rq2 score shape:' + str( len(rq2_score)))
 
-rq1_rmse = mean_squared_error (rq1_score[-N:], target_score[-N:], squared=False)
+rq1_rmse = mean_squared_error (rq1_score[-N:], source_score[-N:], squared=False)
 rq1_cv_rmse = mean_squared_error (target_score_cv[-N:], target_score[-N:], squared=False)
 rq2_rmse = mean_squared_error (rq2_score[-N:], target_score[-N:], squared=False)
 rq2_cv_rmse = mean_squared_error (source_score_cv[-N:], source_score[-N:], squared=False)
 
+
+# log optimun record
+record_pd = pd.read_csv('csc_record.csv')
+os.remove('csc_record.csv')
+record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
+record_pd.loc[len(record_pd)] = record_list
+record_pd.to_csv('csc_record.csv')
 
 # rq2
 plot_score (rq2_score, 

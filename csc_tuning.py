@@ -12,7 +12,7 @@ target_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W466
 # layer_1 = range(128, 512+32, 32)
 # layer_2 = range(16, 128+16, 16)
 
-epoch_list = range(20, 20+20, 20)
+epoch_list = range(2, 2+2, 2)
 timestep_list = range(4, 8+4, 4)
 layer_1 = range(128, 160+32, 32)
 layer_2 = range(16, 32+16, 16)
