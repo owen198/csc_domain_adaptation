@@ -505,10 +505,13 @@ try:
     else:
         logging.info('performance not good')
 except:
-    record_pd.loc[len(record_pd)] = record_list
+    if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
+        record_pd.loc[len(record_pd)] = record_list
+        record_pd.to_csv('csc_record.csv', mode='w+', index=False)
 
-    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
-    logging.info('record not found')
+        logging.info('record not found, give an init value')
+    else:
+        logging.info('record not found, waiting init valie')
 
 # rq2
 plot_score (rq2_score, 
