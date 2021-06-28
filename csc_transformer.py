@@ -490,6 +490,7 @@ try:
         logging.info('get better results')
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
 except:
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     logging.info('record not found')
 
 # rq2
