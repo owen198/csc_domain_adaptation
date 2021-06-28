@@ -513,6 +513,7 @@ except:
     else:
         logging.info('record not found, waiting init valie')
 
+
 # rq2
 plot_score (rq2_score, 
             rq2_date, 
