@@ -479,11 +479,15 @@ rq2_cv_rmse = mean_squared_error (source_score_cv[-N:], source_score[-N:], squar
 
 # log optimun record
 record_pd = pd.read_csv('csc_record.csv')
-#os.remove('csc_record.csv')
 record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
-print(record_list)
-record_pd.append(pd.DataFrame(record_list), ignore_index = True)
-record_pd.to_csv('csc_record.csv', mode='w+')
+record_pd.loc[len(record_pd)] = record_list
+
+rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1'].values[0]
+rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2'].values[0]
+
+if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
+    logging.info('get better results')
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
 
 # rq2
 plot_score (rq2_score, 
