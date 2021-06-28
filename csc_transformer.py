@@ -479,8 +479,6 @@ rq2_cv_rmse = mean_squared_error (source_score_cv[-N:], source_score[-N:], squar
 
 # log optimun record
 record_pd = pd.read_csv('csc_record.csv')
-record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
-record_pd.loc[len(record_pd)] = record_list
 
 try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1'].values[0]
@@ -490,11 +488,18 @@ try:
     logging.info('rq2_record='+str(rq2_record))
 
     if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
+        
         logging.info('get better results')
+        
+        record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
+        record_pd.loc[len(record_pd)] = record_list
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
         logging.info('performance not good')
 except:
+    record_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, rq1_rmse, rq2_rmse]
+    record_pd.loc[len(record_pd)] = record_list
+
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     logging.info('record not found')
 
