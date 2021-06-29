@@ -62,7 +62,7 @@ elif len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
 else:
     record_pd.loc[len(record_pd)] = execution_list
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
-    execute_status = 'down'
+    execute_status = 'done'
 
 # Setup GPU
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
@@ -529,6 +529,7 @@ try:
             record_pd.at[update_index, 'rq1_score'] = rq1_score
             record_pd.at[update_index, 'rq1_date'] = rq1_date
             record_pd.at[update_index, 'rq1_parameters'] = parameter_list
+            execute_status = 'update_rq1'
 
         elif rq2_record > rq2_rmse:
             logging.info('find better rq2 performance')
@@ -536,10 +537,12 @@ try:
             record_pd.at[update_index, 'rq2_score'] = rq2_score
             record_pd.at[update_index, 'rq2_date'] = rq2_date
             record_pd.at[update_index, 'rq2_parameters'] = parameter_list
+            execute_status = 'update_rq2'
 
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
         logging.info('performance not good')
+        execute_status = 'performance_ng'
 except:
     if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
         record_pd.loc[len(record_pd)] = record_list
@@ -673,5 +676,5 @@ plt.show()
 record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 update_index = record_pd[record_pd.isin(execution_list).all(axis='columns')].index
-record_pd.at[update_index, 'status'] = 'done'
+record_pd.at[update_index, 'status'] = execute_status
 record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
