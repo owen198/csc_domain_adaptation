@@ -66,8 +66,12 @@ else:
 # Setup GPU
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
+
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
+gpu_options = tensorflow.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.45)
+sess = tf.Session(config=tensorflow.compat.v1.ConfigProto(gpu_options=gpu_options))
+
 gpus = tensorflow.test.gpu_device_name()
 
 
