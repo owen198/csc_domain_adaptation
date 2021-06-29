@@ -50,7 +50,7 @@ gpu_num = int(sys.argv[7])
 
 # check if executed? leave a record if existed
 record_pd = pd.read_csv('csc_execute.csv')
-execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
+execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 if len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
     logging.info('already executed')
     exit()
@@ -507,12 +507,19 @@ try:
         ((Average(rq1_score) > 5) or (Average(rq2_score) > 5) and \
          (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
         
-        logging.info('get better results, drop existing recoder')
-        # drop
+        # update by index
         drop_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
-        record_pd = record_pd.drop(index=drop_index)
-        # insert
-        record_pd.loc[len(record_pd)] = record_list
+
+        if rq1_record > rq1_rmse:
+            record_pd.at[drop_index, 'rq1_rmse'] = rq1_rmse
+            record_pd.at[drop_index, 'rq1_score'] = rq1_score
+            record_pd.at[drop_index, 'rq1_date'] = rq1_date
+
+        elif rq2_record > rq2_rmse:
+            record_pd.at[drop_index, 'rq2_rmse'] = rq2_rmse
+            record_pd.at[drop_index, 'rq2_score'] = rq2_score
+            record_pd.at[drop_index, 'rq2_date'] = rq2_date
+
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
         logging.info('performance not good')
@@ -646,7 +653,8 @@ plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
 plt.show()
 
 
-record_pd = pd.read_csv('csc_executed.csv')
-execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
-record_pd.loc[len(record_pd)] = execution_list
-record_pd.to_csv('csc_executed.csv', mode='w+', index=False)
+record_pd = pd.read_csv('csc_execute.csv')
+execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
+update_index = record_pd[record_pd.isin(execution_list).all(axis='columns')].index
+record_pd.at[update_index, 'status'] = 'done'
+record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
