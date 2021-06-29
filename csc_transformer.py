@@ -508,17 +508,20 @@ try:
          (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
         
         # update by index
-        drop_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+        #drop_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+        update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
 
         if rq1_record > rq1_rmse:
-            record_pd.at[drop_index, 'rq1_rmse'] = rq1_rmse
-            record_pd.at[drop_index, 'rq1_score'] = rq1_score
-            record_pd.at[drop_index, 'rq1_date'] = rq1_date
+            logging.info('find better rq1 performance')
+            record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
+            record_pd.at[update_index, 'rq1_score'] = rq1_score
+            record_pd.at[update_index, 'rq1_date'] = rq1_date
 
         elif rq2_record > rq2_rmse:
-            record_pd.at[drop_index, 'rq2_rmse'] = rq2_rmse
-            record_pd.at[drop_index, 'rq2_score'] = rq2_score
-            record_pd.at[drop_index, 'rq2_date'] = rq2_date
+            logging.info('find better rq2 performance')
+            record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
+            record_pd.at[update_index, 'rq2_score'] = rq2_score
+            record_pd.at[update_index, 'rq2_date'] = rq2_date
 
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
