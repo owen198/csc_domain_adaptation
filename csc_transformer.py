@@ -648,5 +648,5 @@ plt.show()
 
 record_pd = pd.read_csv('csc_executed.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
-record_pd.loc[len(record_pd)] = record_list
+record_pd.loc[len(record_pd)] = execution_list
 record_pd.to_csv('csc_executed.csv', mode='w+', index=False)
