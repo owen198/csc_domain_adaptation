@@ -49,7 +49,7 @@ units_layer_2 = int(sys.argv[6])
 gpu_num = int(sys.argv[7])
 
 # check if executed? leave a record if existed
-record_pd = pd.read_csv('csc_executed.csv')
+record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 if len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
     logging.info('already executed')
