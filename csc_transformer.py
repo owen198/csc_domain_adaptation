@@ -493,7 +493,9 @@ try:
     logging.info('rq1_record='+str(rq1_record))
     logging.info('rq2_record='+str(rq2_record))
 
-    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and ((Average(rq1_score) > 5) or (Average(rq2_score) > 5)):
+    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and 
+        ((Average(rq1_score) > 5) or (Average(rq2_score) > 5) and
+          Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10 ):
         
         logging.info('get better results, drop existing recoder')
         # drop
