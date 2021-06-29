@@ -34,7 +34,7 @@ from keras.callbacks import EarlyStopping
 import kerastuner as kt
 
 # setup logger
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO, filename='csc_tunning.log', encoding='utf-8')
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
@@ -62,6 +62,7 @@ elif len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
 else:
     record_pd.loc[len(record_pd)] = execution_list
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
+    execute_status = 'down'
 
 # Setup GPU
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
