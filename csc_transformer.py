@@ -34,7 +34,7 @@ from keras.callbacks import EarlyStopping
 import kerastuner as kt
 
 # setup logger
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO, filename='csc_tunning.log', encoding='utf-8')
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO, filename='csc_tunning.log')
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
