@@ -20,7 +20,7 @@ layer_2 = range(16, 128+16, 16)
 
 hyperparameters = [source_list, target_list, epoch_list, timestep_list, layer_1, layer_2]
 hp_list = list(itertools.product(*hyperparameters))
-#random.shuffle(hp_list)
+random.shuffle(hp_list)
 
 for hp in hp_list:
 
