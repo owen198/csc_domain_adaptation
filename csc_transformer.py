@@ -48,6 +48,15 @@ units_layer_1 = int(sys.argv[5])
 units_layer_2 = int(sys.argv[6])
 gpu_num = int(sys.argv[7])
 
+# check if executed? leave a record if existed
+record_pd = pd.read_csv('csc_executed.csv')
+execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
+if len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
+    logging.info('already executed')
+else:
+    record_pd.loc[len(record_pd)] = record_list
+    record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
+
 # Setup GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
@@ -493,9 +502,9 @@ try:
     logging.info('rq1_record='+str(rq1_record))
     logging.info('rq2_record='+str(rq2_record))
 
-    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and 
-        ((Average(rq1_score) > 5) or (Average(rq2_score) > 5) and
-          Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10 ):
+    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+        ((Average(rq1_score) > 5) or (Average(rq2_score) > 5) and \
+         (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
         
         logging.info('get better results, drop existing recoder')
         # drop
@@ -634,3 +643,9 @@ ax.grid(True)
 plt.xlim(0, 1)
 plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
 plt.show()
+
+
+record_pd = pd.read_csv('csc_executed.csv')
+execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
+record_pd.loc[len(record_pd)] = record_list
+record_pd.to_csv('csc_executed.csv', mode='w+', index=False)
