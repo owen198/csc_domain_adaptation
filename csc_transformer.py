@@ -58,6 +58,7 @@ else:
     record_pd.loc[len(record_pd)] = execution_list
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
 
+exit()
 # Setup GPU
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
