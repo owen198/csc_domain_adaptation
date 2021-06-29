@@ -54,7 +54,7 @@ execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2
 if len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
     logging.info('already executed')
 else:
-    record_pd.loc[len(record_pd)] = record_list
+    record_pd.loc[len(record_pd)] = execution_list
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
 
 # Setup GPU
