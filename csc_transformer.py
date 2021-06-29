@@ -380,7 +380,7 @@ def lstm_ae_2():
     lstm_ae_model = model.fit(
                         x={'source': Y, 'target': X},
                         epochs=epoch,
-                        batch_size=16, 
+                        batch_size=4, 
                         verbose=1,
                         validation_split=0.2
     )
