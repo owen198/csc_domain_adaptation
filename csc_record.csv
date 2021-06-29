@@ -1,1 +1,1 @@
-source,target,epoch,timesteps,layer1,layer2,rq1_rmse,rq1_score,rq1_datetime,rq2_rmse,rq2_score,rq2_datetime
+source,target,rq1_rmse,rq1_score,rq1_datetime,rq1_parameters,rq2_rmse,rq2_score,rq2_datetime,rq1_parameters
