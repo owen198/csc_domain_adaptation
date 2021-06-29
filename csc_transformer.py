@@ -51,14 +51,20 @@ gpu_num = int(sys.argv[7])
 # check if executed? leave a record if existed
 record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
-if len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
-    logging.info('already executed')
+check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
+
+if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
+    logging.info('task already executed')
+    exit()
+elif len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
+    logging.info('task is running')
     exit()
 else:
     record_pd.loc[len(record_pd)] = execution_list
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
 
 # Setup GPU
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
 gpu_devices = tensorflow.config.experimental.list_physical_devices('GPU')
 tensorflow.config.experimental.set_memory_growth(gpu_devices[0], True)
@@ -491,10 +497,11 @@ def Average(lst):
 
 # log optimun record
 record_pd = pd.read_csv('csc_record.csv')
+
+parameter_list = [epoch, timesteps, units_layer_1, units_layer_2]
 record_list = [source, target, 
-                epoch, timesteps, units_layer_1, units_layer_2, 
-                rq1_rmse, rq1_score, rq1_date,
-                rq2_rmse, rq2_score, rq2_date]
+                rq1_rmse, rq1_score, rq1_date, parameter_list,
+                rq2_rmse, rq2_score, rq2_date, parameter_list]
 
 try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1_rmse'].values[0]
@@ -508,20 +515,22 @@ try:
          (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
         
         # update by index
-        #drop_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
-        update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
+        update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+        #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
 
         if rq1_record > rq1_rmse:
             logging.info('find better rq1 performance')
             record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
             record_pd.at[update_index, 'rq1_score'] = rq1_score
             record_pd.at[update_index, 'rq1_date'] = rq1_date
+            record_pd.at[update_index, 'rq1_parameters'] = parameter_list
 
         elif rq2_record > rq2_rmse:
             logging.info('find better rq2 performance')
             record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
             record_pd.at[update_index, 'rq2_score'] = rq2_score
             record_pd.at[update_index, 'rq2_date'] = rq2_date
+            record_pd.at[update_index, 'rq2_parameters'] = parameter_list
 
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:

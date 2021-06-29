@@ -8,9 +8,9 @@ print(str(sys.argv))
 source_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W4662FM0605', 'W4662FM0606']
 target_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W4662FM0605', 'W4662FM0606']
 
-# epoch_list = range(20, 200+20, 20)
+# epoch_list = range(20, 160+20, 20)
 # timestep_list = range(4, 32+4, 4)
-# layer_1 = range(128, 512+32, 32)
+# layer_1 = range(128, 256+32, 32)
 # layer_2 = range(16, 128+16, 16)
 
 epoch_list = range(2, 2+2, 2)
@@ -20,7 +20,7 @@ layer_2 = range(16, 32+16, 16)
 
 hyperparameters = [source_list, target_list, epoch_list, timestep_list, layer_1, layer_2]
 hp_list = list(itertools.product(*hyperparameters))
-random.shuffle(hp_list)
+#random.shuffle(hp_list)
 
 for hp in hp_list:
 
