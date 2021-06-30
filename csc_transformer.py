@@ -519,7 +519,7 @@ try:
 
     if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
         ((Average(rq1_score) > 5) or (Average(rq2_score) > 5) and \
-         (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
+        (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
         
         # update by index
         update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
