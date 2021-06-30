@@ -53,7 +53,7 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info('version 0630')
+logging.info('version 0701-1')
 
 if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
     logging.info('task already executed')
@@ -517,10 +517,16 @@ try:
     logging.info('rq1_record='+str(rq1_record))
     logging.info('rq2_record='+str(rq2_record))
 
+    rq1_slope = np.polyfit(range(0,len(rq1_score)), rq1_score, 1)[0]
+    rq2_slope = np.polyfit(range(0,len(rq1_score)), rq2_score, 1)[0]
+
+    # if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+    #     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
+    #     (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
+
     if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-        ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
-        (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
-        
+       ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
+
         # update by index
         update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
         #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
