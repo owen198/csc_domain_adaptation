@@ -34,7 +34,7 @@ from keras.callbacks import EarlyStopping
 import kerastuner as kt
 
 # setup logger
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO, filename='csc_tunning.log')
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO, filename='csc_tuning.log')
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 # python csc_transformer.py W4662FM0605 W4662FM0606 1 4 128 64 0
@@ -53,7 +53,7 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info(source+'_'+target+'_'+'version 0701-2')
+logging.info(source+'_'+target+'_'+'version 0701-3')
 
 if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
     logging.info(source+'_'+target+'_'+'task already executed')
