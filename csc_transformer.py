@@ -96,7 +96,7 @@ path = '/data/'
 
 
 def data_loader (source, target):
-    logging.info('data_loader')
+    logging.info(source+'_'+target+'_'+'data_loader')
 
     tag_pd = pd.read_csv('csc_w4.csv')
 
@@ -157,7 +157,7 @@ def data_loader (source, target):
 
 def get_shapes (data_1, data_2):
 
-    logging.info('get_shapes')
+    logging.info(source+'_'+target+'_'+'get_shapes')
 
     shape_min = min (data_1.shape[0], data_2.shape[0])
     shape_max = max (data_1.shape[0], data_2.shape[0])
@@ -166,7 +166,7 @@ def get_shapes (data_1, data_2):
 
 def resample (data_1, data_2):
 
-    logging.info('resample')
+    logging.info(source+'_'+target+'_'+'resample')
 
     shape_min, shape_max = get_shapes (source_training, target_training)
     index = sorted(random.sample(range(0, shape_max), shape_min))
@@ -181,7 +181,7 @@ def resample (data_1, data_2):
     return X, Y
 
 def temporalize (X, y, lookback):
-    logging.info('temporalize')
+    logging.info(source+'_'+target+'_'+'temporalize')
 
     output_X = []
     output_y = []
@@ -226,8 +226,8 @@ def training_lstm_model (input_data, output_data):
                               validation_split=0.2, 
                               callbacks=[early_stopping])
 
-    model_name = 'model/' + filename
-    model.save(model_name)
+    #model_name = 'model/' + filename
+    #model.save(model_name)
 
     fig, ax = plt.subplots(figsize=(10,5))
 
@@ -250,7 +250,7 @@ def scorer_(Y_pred):
     return a*100
 
 def plot_score (score_list, date_list, tag):
-    logging.info('plot_score')
+    logging.info(source+'_'+target+'_'+'plot_score')
 
     fig, ax = plt.subplots(figsize=(10, 2.5))
     plt.xticks(rotation=45)
@@ -296,7 +296,7 @@ def get_score (data_df, start_date, end_date, normalizer, prediction_model):
     return score_list, date_list
 
 def get_synthetic_data (data, lstm_model, normalizer):
-    logging.info('get_synthetic_data')
+    logging.info(source+'_'+target+'_'+'get_synthetic_data')
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
@@ -315,7 +315,7 @@ def get_synthetic_data (data, lstm_model, normalizer):
     return synthetic_pd
 
 def training_ocsvm_models (X_source, X_target, X_synthetic):
-    logging.info('training_ocsvm_models')
+    logging.info(source+'_'+target+'_'+'training_ocsvm_models')
 
     model_source = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_source)
     model_target = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01).fit(X_target)
@@ -324,7 +324,7 @@ def training_ocsvm_models (X_source, X_target, X_synthetic):
     return model_source, model_target, model_synthetic
 
 def get_syntheic_score (data_df, start_date, end_date, prediction_model):
-    logging.info('get_syntheic_score')
+    logging.info(source+'_'+target+'_'+'get_syntheic_score')
 
     score_list = []
     date_list = []
