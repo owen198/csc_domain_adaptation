@@ -53,7 +53,7 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info('version 0701-1')
+logging.info('version 0701-2')
 
 if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
     logging.info('task already executed')
@@ -546,6 +546,9 @@ try:
             record_pd.at[update_index, 'rq2_date'] = rq2_date
             record_pd.at[update_index, 'rq2_parameters'] = parameter_list
             execute_status = 'update_rq2'
+
+        else:
+            logging.info('do nothing')
 
         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     else:
