@@ -551,7 +551,9 @@ try:
     else:
         logging.info('performance not good')
         execute_status = 'performance_ng'
-except:
+except: Exception as e:
+    logging.info(e)
+
     if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
         record_pd.loc[len(record_pd)] = [source, target, 
                                         100, rq1_score, rq1_date, parameter_list,
