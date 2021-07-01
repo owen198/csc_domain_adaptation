@@ -516,6 +516,13 @@ try:
 except:
     rq1_record = 100
     rq2_record = 100
+
+    record_pd.loc[len(record_pd)] = [source, target, 
+                                        100, rq1_score, rq1_date, parameter_list,
+                                        100, rq2_score, rq2_date, parameter_list]
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+
+    execute_status = 'init'
     logging.info(source+'_'+target+'_'+'record not found, give an init value')
 
 
