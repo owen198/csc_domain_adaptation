@@ -554,7 +554,7 @@ try:
     else:
         logging.info('performance not good')
         execute_status = 'performance_ng'
-except: Exception as e:
+except Exception as e:
     logging.info(e)
 
     if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
