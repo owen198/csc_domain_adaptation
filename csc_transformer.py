@@ -53,13 +53,13 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
 check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info('version 0701-2')
+logging.info(source+'_'+target+'_'+'version 0701-2')
 
 if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
-    logging.info('task already executed')
+    logging.info(source+'_'+target+'_'+'task already executed')
     exit()
 elif len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
-    logging.info('task is running')
+    logging.info(source+'_'+target+'_'+'task is running')
     exit()
 else:
     record_pd.loc[len(record_pd)] = execution_list
@@ -416,15 +416,15 @@ X, Y = resample(X_source, X_target)
 X, _ = temporalize(X = X.values, y = np.zeros(len(X)), lookback = timesteps)
 Y, _ = temporalize(X = Y.values, y = np.zeros(len(Y)), lookback = timesteps)
 
-logging.info('source shape (after temporalize):' + str(Y.shape))
-logging.info('target shape (after temporalize):' + str(X.shape))
+logging.info(source+'_'+target+'_'+'source shape (after temporalize):' + str(Y.shape))
+logging.info(source+'_'+target+'_'+'target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
 X_synthetic = get_synthetic_data(target_validation, lstm_model, source_normalizer)
 
-logging.info('X_synthetic shape:' + str(X_synthetic.shape))
-logging.info('X_source shape:' + str(source_validation.shape))
-logging.info('X_target shape:' + str(target_validation.shape))
+logging.info(source+'_'+target+'_'+'X_synthetic shape:' + str(X_synthetic.shape))
+logging.info(source+'_'+target+'_'+'X_source shape:' + str(source_validation.shape))
+logging.info(source+'_'+target+'_'+'X_target shape:' + str(target_validation.shape))
 
 #normalizer = preprocessing.MinMaxScaler()
 #synthetic_normalizer = normalizer.fit(X_synthetic)
@@ -489,10 +489,10 @@ target_score, target_date = get_score(target_validation,
 N = min(len(target_score), len(source_score), len(rq1_score), len(rq2_score), len(source_score_syn), len(syn_score))
 
 
-logging.info('target score shape:' + str(len(target_score)))
-logging.info('source score shape:' + str( len(source_score)))
-logging.info('rq1 score shape:' + str( len(rq1_score)))
-logging.info('rq2 score shape:' + str( len(rq2_score)))
+logging.info(source+'_'+target+'_'+'target score shape:' + str(len(target_score)))
+logging.info(source+'_'+target+'_'+'source score shape:' + str( len(source_score)))
+logging.info(source+'_'+target+'_'+'rq1 score shape:' + str( len(rq1_score)))
+logging.info(source+'_'+target+'_'+'rq2 score shape:' + str( len(rq2_score)))
 
 rq1_rmse = mean_squared_error (rq1_score[-N:], source_score[-N:], squared=False)
 rq1_cv_rmse = mean_squared_error (target_score_cv[-N:], target_score[-N:], squared=False)
@@ -513,59 +513,67 @@ record_list = [source, target,
 try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1_rmse'].values[0]
     rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2_rmse'].values[0]
-    
-    logging.info('rq1_record='+str(rq1_record))
-    logging.info('rq2_record='+str(rq2_record))
+except:
+    rq1_record = 100
+    rq2_record = 100
+    logging.info(source+'_'+target+'_'+'record not found, give an init value')
 
-    rq1_slope = np.polyfit(range(0,len(rq1_score)), rq1_score, 1)[0]
-    rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 
-    # if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-    #     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
-    #     (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
+logging.info(source+'_'+target+'_'+'rq1_record='+str(rq1_record))
+logging.info(source+'_'+target+'_'+'rq2_record='+str(rq2_record))
 
-    if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-       ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
+rq1_slope = np.polyfit(range(0,len(rq1_score)), rq1_score, 1)[0]
+rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 
-        # update by index
-        update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
-        #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
+# if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+#     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
+#     (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
 
-        if rq1_record > rq1_rmse:
-            logging.info('find better rq1 performance')
-            record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
-            record_pd.at[update_index, 'rq1_score'] = rq1_score
-            record_pd.at[update_index, 'rq1_date'] = rq1_date
-            record_pd.at[update_index, 'rq1_parameters'] = parameter_list
-            execute_status = 'update_rq1'
+if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+    ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
 
-        elif rq2_record > rq2_rmse:
-            logging.info('find better rq2 performance')
-            record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
-            record_pd.at[update_index, 'rq2_score'] = rq2_score
-            record_pd.at[update_index, 'rq2_date'] = rq2_date
-            record_pd.at[update_index, 'rq2_parameters'] = parameter_list
-            execute_status = 'update_rq2'
+    # update by index
+    update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+    #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
 
-        else:
-            logging.info('do nothing')
+    if rq1_record > rq1_rmse:
+        logging.info(source+'_'+target+'_'+'find better rq1 performance')
+        record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
+        record_pd.at[update_index, 'rq1_score'] = rq1_score
+        record_pd.at[update_index, 'rq1_date'] = rq1_date
+        record_pd.at[update_index, 'rq1_parameters'] = parameter_list
+        execute_status = 'update_rq1'
 
-        record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+    elif rq2_record > rq2_rmse:
+        logging.info(source+'_'+target+'_'+'find better rq2 performance')
+        record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
+        record_pd.at[update_index, 'rq2_score'] = rq2_score
+        record_pd.at[update_index, 'rq2_date'] = rq2_date
+        record_pd.at[update_index, 'rq2_parameters'] = parameter_list
+        execute_status = 'update_rq2'
+
     else:
-        logging.info('performance not good')
-        execute_status = 'performance_ng'
-except Exception as e:
-    logging.info(e)
+        logging.info(source+'_'+target+'_'+'do nothing')
 
-    if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
-        record_pd.loc[len(record_pd)] = [source, target, 
-                                        100, rq1_score, rq1_date, parameter_list,
-                                        100, rq2_score, rq2_date, parameter_list]
-        record_pd.to_csv('csc_record.csv', mode='w+', index=False)
-        execute_status = 'init'
-        logging.info('record not found, give an init value')
-    else:
-        logging.info('record not found, waiting init valie')
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+else:
+    logging.info(source+'_'+target+'_'+'performance not good')
+    execute_status = 'performance_ng'
+
+
+
+# except Exception as e:
+#     logging.info(e)
+
+#     if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
+#         record_pd.loc[len(record_pd)] = [source, target, 
+#                                         100, rq1_score, rq1_date, parameter_list,
+#                                         100, rq2_score, rq2_date, parameter_list]
+#         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+#         execute_status = 'init'
+#         logging.info('record not found, give an init value')
+#     else:
+#         logging.info('record not found, waiting init valie')
 
 
 # rq2
