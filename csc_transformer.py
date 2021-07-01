@@ -518,7 +518,7 @@ try:
     logging.info('rq2_record='+str(rq2_record))
 
     rq1_slope = np.polyfit(range(0,len(rq1_score)), rq1_score, 1)[0]
-    rq2_slope = np.polyfit(range(0,len(rq1_score)), rq2_score, 1)[0]
+    rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 
     # if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
     #     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
