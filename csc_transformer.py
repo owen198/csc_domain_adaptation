@@ -537,10 +537,10 @@ rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 #     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
 #     (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
 
-if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
+# if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
 
-# if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-#     ((rq1_slope > 0.04) or (rq2_slope > 0.04)):        
+if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+    ((rq1_slope > 0.04) or (rq2_slope > 0.04)):        
 
     # update by index
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
@@ -548,13 +548,11 @@ if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
     print(update_index)
 
     if rq1_record > rq1_rmse:
-        print(type(rq1_score))
-        print(rq1_score)
 
         logging.info(source+'_'+target+'_'+'find better rq1 performance')
         record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
         record_pd.at[update_index, 'rq1_score'] = str(rq1_score)
-        record_pd.at[update_index, 'rq1_date'] = str(rq1_date)
+        record_pd.at[update_index, 'rq1_datetime'] = str(rq1_date)
         record_pd.at[update_index, 'rq1_parameters'] = str(parameter_list)
         execute_status = 'update_rq1'
 
@@ -562,7 +560,7 @@ if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
         logging.info(source+'_'+target+'_'+'find better rq2 performance')
         record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
         record_pd.at[update_index, 'rq2_score'] = str(rq2_score)
-        record_pd.at[update_index, 'rq2_date'] = str(rq2_date)
+        record_pd.at[update_index, 'rq2_datetime'] = str(rq2_date)
         record_pd.at[update_index, 'rq2_parameters'] = str(parameter_list)
         execute_status = 'update_rq2'
 
