@@ -513,6 +513,7 @@ record_list = [source, target,
 try:
     rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1_rmse'].values[0]
     rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2_rmse'].values[0]
+    execute_status = 'check'
 except:
     rq1_record = 100
     rq2_record = 100
@@ -564,7 +565,7 @@ if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
         execute_status = 'do_nothing'
 
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
-    execute_status = 'performance_up'
+
 elif execute_status == 'init':
     logging.info(source+'_'+target+'_'+'init')
 else:
