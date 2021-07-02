@@ -53,7 +53,7 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 #check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info(source+'_'+target+'_'+'version 0701-4')
+logging.info(source+'_'+target+'_'+'version 0702-1')
 
 if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')]) > 0:
     logging.info(source+'_'+target+'_'+'task already executed')
@@ -511,8 +511,8 @@ record_list = [source, target,
                 rq2_rmse, rq2_score, rq2_date, parameter_list]
 
 try:
-    rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq1_rmse'].values[0]
-    rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ].tail(1)['rq2_rmse'].values[0]
+    rq1_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ]['rq1_rmse'].values[0]
+    rq2_record = record_pd[(record_pd['source']==source) & (record_pd['target']==target) ]['rq2_rmse'].values[0]
     execute_status = 'check'
 except:
     rq1_record = 100
@@ -537,8 +537,10 @@ rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 #     ((Average(rq1_score) > 3.5) or (Average(rq2_score) > 3.5) and \
 #     (Average(score_list[len(score_list)//2:]) - Average(rq1_score[:len(rq1_score)//2]) > 10) ):
 
-if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-    ((rq1_slope > 0.04) or (rq2_slope > 0.04)):        
+if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
+
+# if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
+#     ((rq1_slope > 0.04) or (rq2_slope > 0.04)):        
 
     # update by index
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
