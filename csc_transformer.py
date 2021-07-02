@@ -59,6 +59,7 @@ if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axi
     logging.info(source+'_'+target+'_'+'task already executed')
     exit()
 else:
+    execution_list = execution_list.append('running')
     print(execution_list)
     print(execution_list.append('running'))
     record_pd.loc[len(record_pd)] = execution_list.append('running')
