@@ -548,6 +548,9 @@ if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
     print(update_index)
 
     if rq1_record > rq1_rmse:
+        print(type(rq1_score))
+        print(rq1_score)
+
         logging.info(source+'_'+target+'_'+'find better rq1 performance')
         record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
         record_pd.at[update_index, 'rq1_score'] = np.array(rq1_score)
