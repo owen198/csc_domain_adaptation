@@ -62,7 +62,7 @@ else:
     #execution_list = execution_list.append('running')
     print(type(execution_list))
     print(execution_list)
-    print(execution_list.append('running'))
+    print(execution_list.append("running"))
     record_pd.loc[len(record_pd)] = execution_list.append('running')
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
     execute_status = 'done'
