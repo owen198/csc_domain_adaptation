@@ -712,4 +712,5 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 update_index = record_pd[record_pd.isin(execution_list).all(axis='columns')].index
 record_pd.at[update_index, 'status'] = execute_status
+logging.info(source+'_'+target+'_'+'final status:'+execute_status)
 record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
