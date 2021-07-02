@@ -50,19 +50,16 @@ gpu_num = int(sys.argv[7])
 
 # check if executed? leave a record if existed
 record_pd = pd.read_csv('csc_execute.csv')
-execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'running']
-check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
+execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
+#check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
 logging.info(source+'_'+target+'_'+'version 0701-4')
 
-if len(record_pd[record_pd.isin(check_list).all(axis='columns')]) > 0:
+if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')]) > 0:
     logging.info(source+'_'+target+'_'+'task already executed')
     exit()
-elif len(record_pd[record_pd.isin(execution_list).all(axis='columns')]) > 0:
-    logging.info(source+'_'+target+'_'+'task is running')
-    exit()
 else:
-    record_pd.loc[len(record_pd)] = execution_list
+    record_pd.loc[len(record_pd)] = execution_list.append('running')
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
     execute_status = 'done'
 
@@ -543,6 +540,7 @@ if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
     # update by index
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
     #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
+    print(update_index)
 
     if rq1_record > rq1_rmse:
         logging.info(source+'_'+target+'_'+'find better rq1 performance')
@@ -710,6 +708,7 @@ plt.show()
 
 record_pd = pd.read_csv('csc_execute.csv')
 logging.info(source+'_'+target+'_'+'final status:'+execute_status)
+
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 update_index = record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')].index
 
