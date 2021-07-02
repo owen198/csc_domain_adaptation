@@ -64,6 +64,7 @@ else:
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
     execute_status = 'done'
 
+exit()
 # Setup GPU
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_num)
