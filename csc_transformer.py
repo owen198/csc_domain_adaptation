@@ -52,7 +52,7 @@ gpu_num = int(sys.argv[7])
 record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 #check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
-
+print(execution_list)
 logging.info(source+'_'+target+'_'+'version 0701-4')
 
 if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')]) > 0:
