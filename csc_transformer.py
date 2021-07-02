@@ -553,8 +553,8 @@ if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
 
         logging.info(source+'_'+target+'_'+'find better rq1 performance')
         record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
-        record_pd.at[update_index, 'rq1_score'] = np.array(rq1_score)
-        record_pd.at[update_index, 'rq1_date'] = np.array(rq1_date)
+        record_pd.at[update_index, 'rq1_score'] = str(rq1_score)
+        record_pd.at[update_index, 'rq1_date'] = str(rq1_date)
         record_pd.at[update_index, 'rq1_parameters'] = parameter_list
         execute_status = 'update_rq1'
 
