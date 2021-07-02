@@ -555,15 +555,15 @@ if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
         record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
         record_pd.at[update_index, 'rq1_score'] = str(rq1_score)
         record_pd.at[update_index, 'rq1_date'] = str(rq1_date)
-        record_pd.at[update_index, 'rq1_parameters'] = parameter_list
+        record_pd.at[update_index, 'rq1_parameters'] = str(parameter_list)
         execute_status = 'update_rq1'
 
     elif rq2_record > rq2_rmse:
         logging.info(source+'_'+target+'_'+'find better rq2 performance')
         record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
-        record_pd.at[update_index, 'rq2_score'] = rq2_score
-        record_pd.at[update_index, 'rq2_date'] = rq2_date
-        record_pd.at[update_index, 'rq2_parameters'] = parameter_list
+        record_pd.at[update_index, 'rq2_score'] = str(rq2_score)
+        record_pd.at[update_index, 'rq2_date'] = str(rq2_date)
+        record_pd.at[update_index, 'rq2_parameters'] = str(parameter_list)
         execute_status = 'update_rq2'
 
     else:
