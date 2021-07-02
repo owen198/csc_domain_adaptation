@@ -53,7 +53,7 @@ record_pd = pd.read_csv('csc_execute.csv')
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 #check_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2, 'done']
 
-logging.info(source+'_'+target+'_'+'version 0702-1')
+logging.info(source+'_'+target+'_'+'version 0702-2')
 
 if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')]) > 0:
     logging.info(source+'_'+target+'_'+'task already executed')
