@@ -709,6 +709,7 @@ plt.show()
 
 
 record_pd = pd.read_csv('csc_execute.csv')
+logging.info(source+'_'+target+'_'+'final status:'+execute_status)
 execution_list = [source, target, epoch, timesteps, units_layer_1, units_layer_2]
 update_index = record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axis='columns')].index
 
