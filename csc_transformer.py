@@ -565,6 +565,8 @@ if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
 
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
     execute_status = 'performance_up'
+elif execute_status == 'init':
+    logging.info(source+'_'+target+'_'+'init')
 else:
     logging.info(source+'_'+target+'_'+'performance not good')
     execute_status = 'performance_ng'
