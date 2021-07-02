@@ -420,7 +420,11 @@ logging.info(source+'_'+target+'_'+'source shape (after temporalize):' + str(Y.s
 logging.info(source+'_'+target+'_'+'target shape (after temporalize):' + str(X.shape))
 
 lstm_model = training_lstm_model(X, Y)
-X_synthetic = get_synthetic_data(target_validation, lstm_model, source_normalizer)
+try:
+    X_synthetic = get_synthetic_data(target_validation, lstm_model, source_normalizer)
+except:
+    logging.info(source+'_'+target+'_'+'transformation failed')
+    exit()
 
 logging.info(source+'_'+target+'_'+'X_synthetic shape:' + str(X_synthetic.shape))
 logging.info(source+'_'+target+'_'+'X_source shape:' + str(source_validation.shape))
@@ -540,12 +544,11 @@ rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 # if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
 
 if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-    ((rq1_slope > 0.04) or (rq2_slope > 0.04)):        
+    ((rq1_slope > 0.05) or (rq2_slope > 0.05)):        
 
     # update by index
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
     #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
-    print(update_index)
 
     if rq1_record > rq1_rmse:
 
@@ -721,3 +724,4 @@ update_index = record_pd[record_pd.drop(['status'], axis=1).isin(execution_list)
 record_pd.at[update_index, 'status'] = execute_status
 logging.info(source+'_'+target+'_'+'final status:'+execute_status)
 record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
+
