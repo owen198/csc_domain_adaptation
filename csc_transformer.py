@@ -59,7 +59,7 @@ if len(record_pd[record_pd.drop(['status'], axis=1).isin(execution_list).all(axi
     logging.info(source+'_'+target+'_'+'task already executed')
     exit()
 else:
-    print(execution_list)
+    print(execution_list.append('running'))
     record_pd.loc[len(record_pd)] = execution_list.append('running')
     record_pd.to_csv('csc_execute.csv', mode='w+', index=False)
     execute_status = 'done'
