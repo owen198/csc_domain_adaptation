@@ -544,7 +544,7 @@ rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 # if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
 
 if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-    ((rq1_slope > 0.05) or (rq2_slope > 0.05)):        
+    ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
 
     # update by index
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
