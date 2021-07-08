@@ -558,7 +558,7 @@ if (rq1_record > rq1_rmse) and (rq1_slope > 0.08):
     record_pd.to_csv('csc_record.csv', mode='w+', index=False)
 
 # rq2
-if: (rq2_record > rq2_rmse) and (rq2_slope > 0.08):
+if (rq2_record > rq2_rmse) and (rq2_slope > 0.08):
 
     update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
 
