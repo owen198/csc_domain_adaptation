@@ -543,6 +543,43 @@ rq2_slope = np.polyfit(range(0,len(rq2_score)), rq2_score, 1)[0]
 
 # if (rq1_record > rq1_rmse) or (rq2_record > rq2_rmse):
 
+# rq1
+if (rq1_record > rq1_rmse) and (rq1_slope > 0.08):
+
+    update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+
+    logging.info(source+'_'+target+'_'+'find better rq1 performance')
+    record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
+    record_pd.at[update_index, 'rq1_score'] = str(rq1_score)
+    record_pd.at[update_index, 'rq1_datetime'] = str(rq1_date)
+    record_pd.at[update_index, 'rq1_parameters'] = str(parameter_list)
+    execute_status = 'update_rq1'
+
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+
+# rq2
+if: (rq2_record > rq2_rmse) and (rq2_slope > 0.08):
+
+    update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
+
+    logging.info(source+'_'+target+'_'+'find better rq2 performance')
+    record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
+    record_pd.at[update_index, 'rq2_score'] = str(rq2_score)
+    record_pd.at[update_index, 'rq2_datetime'] = str(rq2_date)
+    record_pd.at[update_index, 'rq2_parameters'] = str(parameter_list)
+    execute_status = 'update_rq2'
+
+    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+
+
+if execute_status == 'init':
+    logging.info(source+'_'+target+'_'+'init')
+else:
+    logging.info(source+'_'+target+'_'+'performance not good')
+    execute_status = 'performance_ng'
+
+
+'''
 if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
     ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
 
@@ -578,7 +615,7 @@ elif execute_status == 'init':
 else:
     logging.info(source+'_'+target+'_'+'performance not good')
     execute_status = 'performance_ng'
-
+'''
 
 
 # except Exception as e:
