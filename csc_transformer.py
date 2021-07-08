@@ -574,6 +574,10 @@ if (rq2_record > rq2_rmse) and (rq2_slope > 0.08):
 
 if execute_status == 'init':
     logging.info(source+'_'+target+'_'+'init')
+elif execute_status == 'update_rq2':
+    pass
+elif execute_status == 'update_rq1':
+    pass
 else:
     logging.info(source+'_'+target+'_'+'performance not good')
     execute_status = 'performance_ng'
