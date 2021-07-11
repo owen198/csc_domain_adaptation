@@ -89,7 +89,8 @@ filename = source[-3:]+'_'+target[-3:]+'_'+str(epoch)+'_'+ \
 
 n_features = 390
 retrain = True
-path = '/data/'
+#path = '/data/' # nptu
+path = './data/W4/' #nchu
 
 
 
@@ -208,7 +209,7 @@ def lstm_ae():
     model.add(LSTM(units_layer_2, activation='relu', return_sequences=True))
     model.add(LSTM(units_layer_1, activation='relu', return_sequences=True))
     model.add(TimeDistributed(Dense(n_features)))
-    model.compile(optimizer='adam', loss='mse', metrics=[metrics.RootMeanSquaredError()])
+    model.compile(optimizer='RMSprop', loss='mse', metrics=[metrics.RootMeanSquaredError()])
     model.summary()
 
     return model
@@ -583,177 +584,126 @@ else:
     execute_status = 'performance_ng'
 
 
-'''
-if ((rq1_record > rq1_rmse) or (rq2_record > rq2_rmse)) and \
-    ((rq1_slope > 0.08) or (rq2_slope > 0.08)):        
+if execute_status != 'performance_ng':
 
-    # update by index
-    update_index = record_pd[(record_pd['source'] == source) & (record_pd['target'] == target)].index
-    #update_index = record_pd[record_pd.isin(record_list).all(axis='columns')].index
+    # rq2
+    plot_score (rq2_score, 
+                rq2_date, 
+                'Detect synthetic conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
 
-    if rq1_record > rq1_rmse:
+    # rq1
+    plot_score (rq1_score, 
+                rq1_date, 
+                'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
 
-        logging.info(source+'_'+target+'_'+'find better rq1 performance')
-        record_pd.at[update_index, 'rq1_rmse'] = rq1_rmse
-        record_pd.at[update_index, 'rq1_score'] = str(rq1_score)
-        record_pd.at[update_index, 'rq1_datetime'] = str(rq1_date)
-        record_pd.at[update_index, 'rq1_parameters'] = str(parameter_list)
-        execute_status = 'update_rq1'
+    plot_score (source_score, 
+                source_date, 
+                'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['source'][-3:] +' (source)model')
 
-    elif rq2_record > rq2_rmse:
-        logging.info(source+'_'+target+'_'+'find better rq2 performance')
-        record_pd.at[update_index, 'rq2_rmse'] = rq2_rmse
-        record_pd.at[update_index, 'rq2_score'] = str(rq2_score)
-        record_pd.at[update_index, 'rq2_datetime'] = str(rq2_date)
-        record_pd.at[update_index, 'rq2_parameters'] = str(parameter_list)
-        execute_status = 'update_rq2'
+    plot_score (source_score_cv, 
+                source_date_cv, 
+                'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['target'][-3:] +' (target)model, RMSE='+ "{:.3f}".format(rq2_cv_rmse))
 
-    else:
-        logging.info(source+'_'+target+'_'+'do nothing')
-        execute_status = 'do_nothing'
+    plot_score (target_score, 
+                target_date, 
+                'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['target'][-3:] +' (target)model')
 
-    record_pd.to_csv('csc_record.csv', mode='w+', index=False)
+    plot_score (target_score_cv, 
+                target_date_cv, 
+                'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
-elif execute_status == 'init':
-    logging.info(source+'_'+target+'_'+'init')
-else:
-    logging.info(source+'_'+target+'_'+'performance not good')
-    execute_status = 'performance_ng'
-'''
+    plot_score (source_score_syn, 
+                source_date_syn, 
+                'Detect ' + tag_dict['source'][-3:] +' (target)conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
-
-# except Exception as e:
-#     logging.info(e)
-
-#     if (Average(rq1_score) > 5) or (Average(rq2_score) > 5):
-#         record_pd.loc[len(record_pd)] = [source, target, 
-#                                         100, rq1_score, rq1_date, parameter_list,
-#                                         100, rq2_score, rq2_date, parameter_list]
-#         record_pd.to_csv('csc_record.csv', mode='w+', index=False)
-#         execute_status = 'init'
-#         logging.info('record not found, give an init value')
-#     else:
-#         logging.info('record not found, waiting init valie')
-
-
-# rq2
-plot_score (rq2_score, 
-            rq2_date, 
-            'Detect synthetic conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq2_rmse))
-
-# rq1
-plot_score (rq1_score, 
-            rq1_date, 
-            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ 'synthetic model, RMSE=' + "{:.3f}".format(rq1_rmse))
-
-plot_score (source_score, 
-            source_date, 
-            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['source'][-3:] +' (source)model')
-
-plot_score (source_score_cv, 
-            source_date_cv, 
-            'Detect ' + tag_dict['source'][-3:] +' (source)conditions by using '+ tag_dict['target'][-3:] +' (target)model, RMSE='+ "{:.3f}".format(rq2_cv_rmse))
-
-plot_score (target_score, 
-            target_date, 
-            'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['target'][-3:] +' (target)model')
-
-plot_score (target_score_cv, 
-            target_date_cv, 
-            'Detect ' + tag_dict['target'][-3:] +' (target)conditions by using '+ tag_dict['source'][-3:] +' (source)model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
-
-plot_score (source_score_syn, 
-            source_date_syn, 
-            'Detect ' + tag_dict['source'][-3:] +' (target)conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
-
-plot_score (syn_score, 
-            syn_date, 
-            'Detect synthetic conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
+    plot_score (syn_score, 
+                syn_date, 
+                'Detect synthetic conditions by using '+ 'synthetic model, RMSE='+ "{:.3f}".format(rq1_cv_rmse))
 
 
 
-### show the difference between real data and synthetic data
-#feature_index = 206
-feature_index = 1
-duration = 26000
-interval = 100
-fig, ax = plt.subplots(figsize=(6,2))
+    ### show the difference between real data and synthetic data
+    #feature_index = 206
+    feature_index = 1
+    duration = 26000
+    interval = 100
+    fig, ax = plt.subplots(figsize=(6,2))
 
-ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue', linewidth=1)
-ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.', color='tab:red', linewidth=1)
-ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.', color='tab:green', linewidth=1)
+    ax.plot(range(duration, duration+interval), X_target[feature_index].head(duration).tail(interval), label='target', marker='.', color='tab:blue', linewidth=1)
+    ax.plot(range(duration, duration+interval), X_source[feature_index].head(duration).tail(interval), label='source', marker='.', color='tab:red', linewidth=1)
+    ax.plot(range(duration, duration+interval), X_synthetic[feature_index].head(duration).tail(interval), label='synthetic', marker='.', color='tab:green', linewidth=1)
 
-ax.legend()
-ax.grid(True)
-plt.xlabel('timestamp')
-plt.ylabel('value')
-plt.tight_layout()
+    ax.legend()
+    ax.grid(True)
+    plt.xlabel('timestamp')
+    plt.ylabel('value')
+    plt.tight_layout()
 
-plt.savefig('results/'+filename + '-' +'realdata.png', dpi=300)
-plt.show()
+    plt.savefig('results/'+filename + '-' +'realdata.png', dpi=300)
+    plt.show()
 
 
-### show distribution
-pca_scale = PCA(n_components=2)
-pca_scale = pca_scale.fit(X_source)
+    ### show distribution
+    pca_scale = PCA(n_components=2)
+    pca_scale = pca_scale.fit(X_source)
 
-X_source_dist = pca_scale.transform(X_source)
-x_min, x_max = X_source_dist.min(0), X_source_dist.max(0)
-X_norm = (X_source_dist-x_min) / (x_max-x_min)  #Normalize
-X_source_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+    X_source_dist = pca_scale.transform(X_source)
+    x_min, x_max = X_source_dist.min(0), X_source_dist.max(0)
+    X_norm = (X_source_dist-x_min) / (x_max-x_min)  #Normalize
+    X_source_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
-X_target_dist = pca_scale.transform(X_target)
-x_min, x_max = X_target_dist.min(0), X_target_dist.max(0)
-X_norm = (X_target_dist-x_min) / (x_max-x_min)  #Normalize
-X_target_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+    X_target_dist = pca_scale.transform(X_target)
+    x_min, x_max = X_target_dist.min(0), X_target_dist.max(0)
+    X_norm = (X_target_dist-x_min) / (x_max-x_min)  #Normalize
+    X_target_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
-X_synthetic_dist = pca_scale.transform(X_synthetic.drop(columns=['datetime']))
-x_min, x_max = X_synthetic_dist.min(0), X_synthetic_dist.max(0)
-X_norm = (X_synthetic_dist-x_min) / (x_max-x_min)  #Normalize
-X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
+    X_synthetic_dist = pca_scale.transform(X_synthetic.drop(columns=['datetime']))
+    x_min, x_max = X_synthetic_dist.min(0), X_synthetic_dist.max(0)
+    X_norm = (X_synthetic_dist-x_min) / (x_max-x_min)  #Normalize
+    X_synthetic_dist_df = pd.DataFrame(X_norm, columns = ['dim1','dim2'])
 
-fig, ax = plt.subplots(figsize=(6,2))
+    fig, ax = plt.subplots(figsize=(6,2))
 
-ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.3, label='source', color='tab:blue')
-ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.3, label='target', color='tab:red')
-ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.3, label='synthetic', color='tab:green')
+    ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.3, label='source', color='tab:blue')
+    ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.3, label='target', color='tab:red')
+    ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.3, label='synthetic', color='tab:green')
 
-ax.legend(loc='best')
-ax.grid(True)
+    ax.legend(loc='best')
+    ax.grid(True)
 
-#plt.ylim(0, 1)
-#plt.xlim(0, 1)
-plt.savefig('results/'+filename + '-' +'distribution.png', dpi=300)
-plt.show()
+    #plt.ylim(0, 1)
+    #plt.xlim(0, 1)
+    plt.savefig('results/'+filename + '-' +'distribution.png', dpi=300)
+    plt.show()
 
 
 
 
-### show histogram ###
-fig, ax = plt.subplots(figsize=(6,2))
+    ### show histogram ###
+    fig, ax = plt.subplots(figsize=(6,2))
 
-#ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
-#ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
-#ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
-a = X_target[feature_index]
-b = X_source[feature_index]
-c = X_synthetic[feature_index]
-bins=np.histogram(np.hstack((a, b, c)), bins=80)[1] #get the bin edges
+    #ax.scatter(X_source_dist_df['dim1'], X_source_dist_df['dim2'], alpha=0.1, label='source')
+    #ax.scatter(X_target_dist_df['dim1'], X_target_dist_df['dim2'], alpha=0.1, label='target')
+    #ax.scatter(X_synthetic_dist_df['dim1'], X_synthetic_dist_df['dim2'], alpha=0.1, label='synthetic')
+    a = X_target[feature_index]
+    b = X_source[feature_index]
+    c = X_synthetic[feature_index]
+    bins=np.histogram(np.hstack((a, b, c)), bins=80)[1] #get the bin edges
 
-plt.hist(a, alpha=0.5, label='target', color='tab:blue', bins=bins)
-plt.hist(b, alpha=0.5, label='source', color='tab:red', bins=bins)
-plt.hist(c, alpha=0.5, label='synthetic', color='tab:green', bins=bins)
+    plt.hist(a, alpha=0.5, label='target', color='tab:blue', bins=bins)
+    plt.hist(b, alpha=0.5, label='source', color='tab:red', bins=bins)
+    plt.hist(c, alpha=0.5, label='synthetic', color='tab:green', bins=bins)
 
-plt.xlabel('values')
-plt.ylabel('frequency')
+    plt.xlabel('values')
+    plt.ylabel('frequency')
 
-ax.legend()
-ax.grid(True)
+    ax.legend()
+    ax.grid(True)
 
-#plt.ylim(0, 1)
-plt.xlim(0, 1)
-plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
-plt.show()
+    #plt.ylim(0, 1)
+    plt.xlim(0, 1)
+    plt.savefig('results/'+filename + '-' +'hist.png', dpi=300)
+    plt.show()
 
 
 record_pd = pd.read_csv('csc_execute.csv')

@@ -9,7 +9,7 @@ source_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W466
 target_list = ['W4633070102', 'W4633080200', 'W4662FM0400', 'W4662FM0507', 'W4662FM0605', 'W4662FM0606']
 
 epoch_list = range(20, 140+20, 20)
-timestep_list = range(4, 32+4, 4)
+timestep_list = range(16, 64+16, 16)
 layer_1 = range(64, 128+32, 32)
 layer_2 = range(16, 64+16, 16)
 
