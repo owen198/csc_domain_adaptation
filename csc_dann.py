@@ -21,11 +21,16 @@ import csc_dataloader
 
 
 #CONSTANTS
-MNIST_M_PATH = './Datasets/MNIST_M/mnistm.h5'
+#MNIST_M_PATH = './Datasets/MNIST_M/mnistm.h5'
 
 BATCH_SIZE = 32
 CHANNELS = 3
 EPOCH = 3
+
+X, Y = csc_dataloader('W4633070102', 'W4633080200')
+print(X.shape)
+print(Y.shape)
+
 
 
 #Load MNIST Data (Source)
