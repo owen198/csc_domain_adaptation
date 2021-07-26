@@ -69,4 +69,12 @@ def loader (source, target):
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
 
-    return globals()[tag_dict['source']+'_training'], globals()[tag_dict['target']+'_training'], globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
+    return globals()[tag_dict['source']], 
+            globals()[tag_dict['target']], 
+            tag_dict
+
+
+def labeler (source, tag_dict):
+
+    source['label'] = 0
+    return source
