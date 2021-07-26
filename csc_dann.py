@@ -145,7 +145,7 @@ class DANN(Model):
         #Label Predictor
         self.label_predictor_layer0 = Dense(100, activation='relu')
         self.label_predictor_layer1 = Dense(100, activation='relu')
-        self.label_predictor_layer2 = Dense(2, activation=None)
+        self.label_predictor_layer2 = Dense(10, activation=None)
         
         #Domain Predictor
         self.domain_predictor_layer0 = GradientReversalLayer()
