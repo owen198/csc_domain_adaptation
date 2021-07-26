@@ -33,14 +33,15 @@ def resample (data_1, data_2):
 
     shape_min, shape_max = get_shapes (data_1, data_2)
     print('resample:', shape_min, shape_max)
-    index = sorted(random.sample(range(0, shape_max), shape_min))
+    index_large = sorted(random.sample(range(0, shape_max), shape_min))
+    index_small = sorted(random.sample(range(0, shape_min), shape_min))
 
     if len(data_1) > len(data_2):
-        X = data_1.iloc[index]
-        Y = data_2
+        X = data_1.iloc[index_large]
+        Y = data_2.iloc[index_small]
     else:
-        X = data_1
-        Y = data_2.iloc[index]
+        X = data_1.iloc[index_small]
+        Y = data_2.iloc[index_large]
 
     return X, Y
 
