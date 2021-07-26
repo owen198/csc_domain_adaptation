@@ -107,8 +107,8 @@ def labeler (data_df, training_from, training_to, end):
 
     #data_df['label'] = 0
 
-    for index, row in training_df.iterrows():
-        print(index, predict_model.predict(row))
+    #for index, row in training_df.iterrows():
+    #    print(index, predict_model.predict(row))
 
 
     delta = datetime.timedelta(days=1)
