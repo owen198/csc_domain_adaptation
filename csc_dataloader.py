@@ -138,6 +138,7 @@ def labeler (data_df, training_from, training_to, end):
 
             if scorer_(validation_df) > 50:
                 index = data_df[(data_df['datetime'] > s_date) & (data_df['datetime'] <= s_date + delta)].index
+                print(index)
                 data_df.at[index, 'label']=1
 
 
