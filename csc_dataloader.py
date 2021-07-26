@@ -1,4 +1,9 @@
 import pandas as pd
+import logging
+
+# setup logger
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
 def loader (source, target):
