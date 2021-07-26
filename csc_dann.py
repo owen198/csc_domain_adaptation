@@ -236,7 +236,7 @@ def train_step_da(s_images, s_labels, t_images=None, t_labels=None, lamda=1.0):
     with tf.GradientTape() as tape:
         output = model(images, train=True, source_train=False, lamda=lamda)
 
-        print('output,', output)
+        print('output', output)
         
         model_loss = get_loss(output[0], labels, output[1], domain_labels)
         epoch_accuracy(output[0], labels)
