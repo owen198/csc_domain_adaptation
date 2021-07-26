@@ -89,9 +89,6 @@ def labeler (source, tag_dict):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
-    tag_dict['source_training_to']
-    tag_dict['source_training_from']
-
     oneClass_predictor = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01)
 
     training_df = data_df[(source['datetime'] > tag_dict['source_training_to']) &
