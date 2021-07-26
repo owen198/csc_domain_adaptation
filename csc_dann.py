@@ -49,6 +49,7 @@ source_y = tf.one_hot(source_df['label'], depth=2)
 
 source_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
                                                      source_y)).batch(BATCH_SIZE*2)
+print(source_dataset)                                            
 da_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
                                                     source_y, 
                                                     target_df.drop(columns=['label']), 
