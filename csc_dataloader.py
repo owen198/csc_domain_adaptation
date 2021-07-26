@@ -101,8 +101,10 @@ def labeler (data_df, training_from, training_to):
     training_df, normalizer = normalization(training_df)
     predict_model = oneClass_predictor.fit(training_df)
 
+    data_df['label'] = 0
+
     for index, row in training_df.iterrows():
-        print(predict_model.predict(row))
+        print(index, predict_model.predict(row))
 
 
     source['label'] = 0
