@@ -17,7 +17,7 @@ import sys
 import matplotlib.pyplot as plt
 import h5py
 
-from csc_dataloader import loader
+import csc_dataloader
 
 
 #CONSTANTS
@@ -27,7 +27,7 @@ BATCH_SIZE = 32
 CHANNELS = 3
 EPOCH = 3
 
-X, Y = loader('W4633070102', 'W4633080200')
+X, Y = csc_dataloader.loader('W4633070102', 'W4633080200')
 print(X.shape)
 print(Y.shape)
 
