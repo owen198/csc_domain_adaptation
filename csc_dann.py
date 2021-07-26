@@ -17,7 +17,7 @@ import sys
 import matplotlib.pyplot as plt
 import h5py
 
-import csc_dataloader
+from csc_dataloader import loader
 
 
 #CONSTANTS
