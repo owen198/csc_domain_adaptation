@@ -162,7 +162,7 @@ class DANN(Model):
         #x = self.feature_extractor_layer4(x, training=train)
         #x = self.feature_extractor_layer5(x, training=train)
         # = self.feature_extractor_layer6(x)
-        
+        print(x.shape)
         feature = tf.reshape(x, [-1, 100 * 64])
         
         #Label Predictor
