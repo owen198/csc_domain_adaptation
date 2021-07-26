@@ -28,7 +28,10 @@ CHANNELS = 3
 EPOCH = 3
 
 source_df, target_df, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
-source_df = csc_dataloader.labeler(source_df, tag_dict['source_training_from'], tag_dict['source_training_to'])
+source_df = csc_dataloader.labeler(source_df, 
+                                    tag_dict['source_training_from'], 
+                                    tag_dict['source_training_to'],
+                                    tag_dict['source_end'])
 
 print(source_df.shape)
 print(target_df.shape)

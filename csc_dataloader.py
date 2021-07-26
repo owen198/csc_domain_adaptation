@@ -85,7 +85,11 @@ def normalization (normal_df):
 
     return normal_df, min_max_scaler
 
-def labeler (data_df, training_from, training_to):
+def scorer_(Y_pred):
+    a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
+    return a*100
+
+def labeler (data_df, training_from, training_to, end):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
@@ -101,10 +105,37 @@ def labeler (data_df, training_from, training_to):
     training_df, normalizer = normalization(training_df)
     predict_model = oneClass_predictor.fit(training_df)
 
-    data_df['label'] = 0
+    #data_df['label'] = 0
 
     for index, row in training_df.iterrows():
         print(index, predict_model.predict(row))
+
+
+    delta = datetime.timedelta(days=1)
+    score_list = []
+    datetime_list = []
+
+    s_date = training_from
+    e_date = end
+
+    while s_date <= e_date:
+
+        validation_df = data_df[(data_df['datetime'] > s_date) & 
+                                (data_df['datetime'] <= s_date + delta)]
+
+
+        if len(validation_df) > 0:
+        
+            validation_df = validation_df.drop(columns=drop_list)
+            validation_df = normalizer.transform(validation_df)
+            validation_df = predict_model.predict(validation_df)
+
+            score_list.append(scorer_(validation_df))
+            datetime_list.append(s_date)
+
+            print(s_date, scorer_(validation_df))
+
+        s_date += delta
 
 
     source['label'] = 0
