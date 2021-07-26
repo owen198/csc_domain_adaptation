@@ -4,6 +4,9 @@ import warnings
 import sys
 import datetime
 
+from sklearn import preprocessing
+from sklearn import svm
+
 # setup logger
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
@@ -71,8 +74,36 @@ def loader (source, target):
 
     return globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
 
+def normalization (normal_df):
+    
+    min_max_scaler = preprocessing.MinMaxScaler()
+    feature_names = list(normal_df)
+    
+    min_max_scaler = min_max_scaler.fit(normal_df.values)
+    X_raw_minmax = min_max_scaler.transform(normal_df.values)
+    normal_df = pd.DataFrame(X_raw_minmax, columns=feature_names)
+
+    return normal_df, min_max_scaler
 
 def labeler (source, tag_dict):
+
+    drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
+
+    tag_dict['source_training_to']
+    tag_dict['source_training_from']
+
+    oneClass_predictor = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01)
+
+    training_df = data_df[(source['datetime'] > tag_dict['source_training_to']) &
+                          (source['datetime'] < tag_dict['source_training_from'])]
+
+    training_df = training_df.drop(columns=drop_list)
+    training_df, normalizer = normalization(training_df)
+    predict_model = oneClass_predictor.fit(training_df)
+
+    for index, row in training_df.iterrows():
+        print(predict_model.predict(row))
+
 
     source['label'] = 0
     return source
