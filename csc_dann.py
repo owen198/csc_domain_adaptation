@@ -163,7 +163,7 @@ class DANN(Model):
         #x = self.feature_extractor_layer5(x, training=train)
         # = self.feature_extractor_layer6(x)
         
-        feature = tf.reshape(x, [-1, 4 * 4 * 64])
+        feature = tf.reshape(x, [-1, 100 * 64])
         
         #Label Predictor
         if source_train is True:
