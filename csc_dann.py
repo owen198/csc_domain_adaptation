@@ -27,11 +27,11 @@ BATCH_SIZE = 32
 CHANNELS = 3
 EPOCH = 3
 
-X, Y, X_test, Y_test, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
-print(X.shape)
-print(Y.shape)
-print(X_test.shape)
-print(Y_test.shape)
+source_df, target_df, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
+source_df = csc_dataloader.labeler(source_df, 'W4633080200')
+
+print(source_df.shape)
+print(target_df.shape)
 print(tag_dict)
 
 
