@@ -27,7 +27,7 @@ BATCH_SIZE = 32
 CHANNELS = 3
 EPOCH = 3
 
-X, Y = csc_dataloader.loader('W4633070102', 'W4633080200')
+X, Y, X_test, Y_test, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
 print(X.shape)
 print(Y.shape)
 
