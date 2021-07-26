@@ -130,13 +130,17 @@ def labeler (data_df, training_from, training_to, end):
             validation_df = normalizer.transform(validation_df)
             validation_df = predict_model.predict(validation_df)
 
-            score_list.append(scorer_(validation_df))
-            datetime_list.append(s_date)
+            #score_list.append(scorer_(validation_df))
+            #datetime_list.append(s_date)
 
             print(s_date, scorer_(validation_df))
+
+            if scorer_(validation_df) > 50:
+                data_df[(data_df['datetime'] > s_date) & (data_df['datetime'] <= s_date + delta)]['label'] = 1
+
 
         s_date += delta
 
 
-    source['label'] = 0
-    return source
+    #source['label'] = 0
+    return data_df
