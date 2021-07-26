@@ -29,9 +29,6 @@ EPOCH = 3
 
 source_df, target_df, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
 
-print(source_df.shape)
-print(target_df.shape)
-
 source_df = csc_dataloader.labeler(source_df, 
                                     tag_dict['source_training_from'], 
                                     tag_dict['source_training_to'],
@@ -42,22 +39,16 @@ target_df = csc_dataloader.labeler(target_df,
                                     tag_dict['target_training_to'],
                                     tag_dict['target_end'])
 
+source_x = source_df.drop(columns=['label'])
+target_x = target_df.drop(columns=['label'])
+
 target_y = tf.one_hot(target_df['label'], depth=2)
 source_y = tf.one_hot(source_df['label'], depth=2)
-#print(tag_dict)
-#data_df.drop(columns=drop_list)
 
-source_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
-                                                     source_y)).batch(BATCH_SIZE*2)
-print(source_dataset)                                            
-da_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
-                                                    source_y, 
-                                                    target_df.drop(columns=['label']), 
-                                                    target_y )).batch(BATCH_SIZE)
-test_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
-                                                    source_df['label'])).batch(BATCH_SIZE*2) #Test Dataset over Target Domain
-test_dataset2 = tf.data.Dataset.from_tensor_slices((target_df.drop(columns=['label']), 
-                                                    target_y)).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
+source_dataset = tf.data.Dataset.from_tensor_slices((source_x, source_y)).batch(BATCH_SIZE * 2)                                
+da_dataset = tf.data.Dataset.from_tensor_slices((source_x, source_y, target_x, target_y )).batch(BATCH_SIZE)
+test_dataset = tf.data.Dataset.from_tensor_slices((source_x, target_x)).batch(BATCH_SIZE * 2) #Test Dataset over Target Domain
+test_dataset2 = tf.data.Dataset.from_tensor_slices((target_x, target_y)).batch(BATCH_SIZE * 2) #Test Dataset over Target (used for training)
 
 
 def def_mnist ():
