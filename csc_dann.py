@@ -42,6 +42,9 @@ target_df = csc_dataloader.labeler(target_df,
 source_x = source_df.drop(columns=['label'])
 target_x = target_df.drop(columns=['label'])
 
+source_x = np.repeat(source_x, CHANNELS, axis=2)
+target_x = np.repeat(target_x, CHANNELS, axis=2)
+
 target_y = tf.one_hot(target_df['label'], depth=2)
 source_y = tf.one_hot(source_df['label'], depth=2)
 
