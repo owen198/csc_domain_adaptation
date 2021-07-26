@@ -42,7 +42,7 @@ target_df = csc_dataloader.labeler(target_df,
 print(source_df.shape)
 print(target_df.shape)
 #print(tag_dict)
-data_df.drop(columns=drop_list)
+#data_df.drop(columns=drop_list)
 
 source_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
                                                     source_df['label'])).batch(BATCH_SIZE*2)
