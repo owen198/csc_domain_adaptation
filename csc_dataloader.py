@@ -85,7 +85,7 @@ def normalization (normal_df):
 
     return normal_df, min_max_scaler
 
-def labeler (source, tag_dict):
+def labeler (data_df, tag_dict):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
