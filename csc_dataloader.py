@@ -91,6 +91,7 @@ def labeler (data_df, tag_dict):
 
     oneClass_predictor = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01)
 
+    print(tag_dict)
     print(type(tag_dict['source_training_to']))
 
     training_df = data_df[(data_df['datetime'] > tag_dict['source_training_to']) &
