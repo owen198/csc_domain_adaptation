@@ -98,8 +98,9 @@ def loader (source, target):
     globals()[tag_dict['source']+'_training'] = globals()[tag_dict['source']+'_training'].drop(columns=drop_list)
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
+    globals()[tag_dict['source']], globals()[tag_dict['target']] = resample(globals()[tag_dict['source']], globals()[tag_dict['target']])
 
-    return resample(globals()[tag_dict['source']], globals()[tag_dict['target']]), tag_dict
+    return globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
 
 def normalization (normal_df):
     
