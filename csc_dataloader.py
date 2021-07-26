@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def csc_dataloader (source, target):
+def loader (source, target):
     logging.info(source+'_'+target+'_'+'data_loader')
 
     tag_pd = pd.read_csv('csc_w4.csv')
