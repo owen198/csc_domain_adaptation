@@ -134,16 +134,16 @@ class DANN(Model):
         # self.feature_extractor_layer6 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
         self.feature_extractor_layer0 = Dense(200, activation='relu')
         self.feature_extractor_layer1 = Dense(150, activation='relu')
-        self.feature_extractor_layer2 = Dense(100, activation='relu')
+        self.feature_extractor_layer2 = Dense(64, activation='relu')
         
         #Label Predictor
-        self.label_predictor_layer0 = Dense(100, activation='relu')
+        self.label_predictor_layer0 = Dense(64, activation='relu')
         self.label_predictor_layer1 = Dense(100, activation='relu')
         self.label_predictor_layer2 = Dense(2, activation=None)
         
         #Domain Predictor
         self.domain_predictor_layer0 = GradientReversalLayer()
-        self.domain_predictor_layer1 = Dense(100, activation='relu')
+        self.domain_predictor_layer1 = Dense(64, activation='relu')
         self.domain_predictor_layer2 = Dense(2, activation=None)
         
     def call(self, x, train=False, source_train=True, lamda=1.0):
