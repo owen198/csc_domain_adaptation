@@ -14,6 +14,32 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 path = './data/W4/'
 
 
+def get_shapes (data_1, data_2):
+
+    #logging.info(source+'_'+target+'_'+'get_shapes')
+
+    shape_min = min (data_1.shape[0], data_2.shape[0])
+    shape_max = max (data_1.shape[0], data_2.shape[0])
+
+    return shape_min, shape_max
+
+def resample (data_1, data_2):
+
+    #logging.info(source+'_'+target+'_'+'resample')
+
+    shape_min, shape_max = get_shapes (data_1, data_2)
+    index = sorted(random.sample(range(0, shape_max), shape_min))
+
+    if len(data_1) > len(data_2):
+        X = data_1.iloc[index]
+        Y = data_2
+    else:
+        X = data_1
+        Y = data_2.iloc[index]
+
+    return X, Y
+
+
 def loader (source, target):
     logging.info(source+'_'+target+'_'+'data_loader')
 
@@ -72,7 +98,7 @@ def loader (source, target):
     globals()[tag_dict['target']+'_training'] = globals()[tag_dict['target']+'_training'].drop(columns=drop_list)
 
 
-    return globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
+    return resample(globals()[tag_dict['source']], globals()[tag_dict['target']]), tag_dict
 
 def normalization (normal_df):
     
@@ -88,6 +114,8 @@ def normalization (normal_df):
 def scorer_(Y_pred):
     a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
     return a*100
+
+
 
 def labeler (data_df, training_from, training_to, end):
 
