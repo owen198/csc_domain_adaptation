@@ -91,8 +91,8 @@ def labeler (data_df, tag_dict):
 
     oneClass_predictor = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01)
 
-    training_df = data_df[(source['datetime'] > tag_dict['source_training_to']) &
-                          (source['datetime'] < tag_dict['source_training_from'])]
+    training_df = data_df[(data_df['datetime'] > tag_dict['source_training_to']) &
+                          (data_df['datetime'] < tag_dict['source_training_from'])]
 
     training_df = training_df.drop(columns=drop_list)
     training_df, normalizer = normalization(training_df)
