@@ -30,7 +30,9 @@ EPOCH = 3
 X, Y, X_test, Y_test, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
 print(X.shape)
 print(Y.shape)
-
+print(X_test.shape)
+print(Y_test.shape)
+print(tag_dict)
 
 
 #Load MNIST Data (Source)
