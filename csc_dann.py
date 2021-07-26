@@ -29,6 +29,9 @@ EPOCH = 3
 
 source_df, target_df, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
 
+print(source_df.shape)
+print(target_df.shape)
+
 source_df = csc_dataloader.labeler(source_df, 
                                     tag_dict['source_training_from'], 
                                     tag_dict['source_training_to'],
@@ -39,8 +42,6 @@ target_df = csc_dataloader.labeler(target_df,
                                     tag_dict['target_training_to'],
                                     tag_dict['target_end'])
 
-print(source_df.shape)
-print(target_df.shape)
 #print(tag_dict)
 #data_df.drop(columns=drop_list)
 
@@ -187,8 +188,6 @@ class DANN(Model):
 
 model = DANN()
 
-
-
 def loss_func(input_logits, target_labels):
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=input_logits, labels=target_labels))
 
@@ -201,8 +200,6 @@ def get_loss(l_logits, labels, d_logits=None, domain=None):
 
 
 model_optimizer = tf.optimizers.SGD()
-
-
 
 domain_labels = np.vstack([np.tile([1., 0.], [BATCH_SIZE, 1]),
                            np.tile([0., 1.], [BATCH_SIZE, 1])])
