@@ -29,6 +29,7 @@ def resample (data_1, data_2):
     #logging.info(source+'_'+target+'_'+'resample')
 
     shape_min, shape_max = get_shapes (data_1, data_2)
+    shape_min = (shape_min // 1024) * 1024
     index = sorted(random.sample(range(0, shape_max), shape_min))
 
     if len(data_1) > len(data_2):
