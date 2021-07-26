@@ -22,8 +22,8 @@ def get_shapes (data_1, data_2):
     shape_min = min (data_1.shape[0], data_2.shape[0])
     shape_max = max (data_1.shape[0], data_2.shape[0])
 
-    shape_min = (shape_min // 1024) * 1024
-    shape_max = (shape_max // 1024) * 1024
+    #shape_min = (shape_min // 1024) * 1024
+    #shape_max = (shape_max // 1024) * 1024
 
     return shape_min, shape_max
 
