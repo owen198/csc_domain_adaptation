@@ -28,14 +28,20 @@ CHANNELS = 3
 EPOCH = 3
 
 source_df, target_df, tag_dict = csc_dataloader.loader('W4633070102', 'W4633080200')
+
 source_df = csc_dataloader.labeler(source_df, 
                                     tag_dict['source_training_from'], 
                                     tag_dict['source_training_to'],
                                     tag_dict['source_end'])
 
+target_df = csc_dataloader.labeler(target_df, 
+                                    tag_dict['target_training_from'], 
+                                    tag_dict['target_training_to'],
+                                    tag_dict['target_end'])
+
 print(source_df.shape)
 print(target_df.shape)
-print(tag_dict)
+#print(tag_dict)
 
 
 #Load MNIST Data (Source)
