@@ -302,9 +302,9 @@ def test():
 
 
 #Training
-#train('source', 5)
+train('source', 5)
 
-train('domain-adaptation', EPOCH)
+#train('domain-adaptation', EPOCH)
 
 
 #Plot Results
