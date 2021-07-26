@@ -145,7 +145,7 @@ class DANN(Model):
         #Label Predictor
         self.label_predictor_layer0 = Dense(100, activation='relu')
         self.label_predictor_layer1 = Dense(100, activation='relu')
-        self.label_predictor_layer2 = Dense(10, activation=None)
+        self.label_predictor_layer2 = Dense(2, activation=None)
         
         #Domain Predictor
         self.domain_predictor_layer0 = GradientReversalLayer()
@@ -189,6 +189,7 @@ class DANN(Model):
 model = DANN()
 
 def loss_func(input_logits, target_labels):
+    print('loss_func')
     return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=input_logits, labels=target_labels))
 
 
