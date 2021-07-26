@@ -143,7 +143,7 @@ def labeler (data_df, training_from, training_to, end):
 
         s_date += delta
 
-    print(data_df)
-    print(list(data_df))
+    print(data_df[data_df['label']==1])
+    #print(list(data_df))
     #source['label'] = 0
     return data_df
