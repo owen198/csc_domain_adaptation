@@ -85,17 +85,17 @@ def normalization (normal_df):
 
     return normal_df, min_max_scaler
 
-def labeler (data_df, tag_dict):
+def labeler (data_df, training_from, training_to):
 
     drop_list = ['Unnamed: 0', '_id','type','scada','timestamp','device', 'datetime']
 
     oneClass_predictor = svm.OneClassSVM(nu=0.01, kernel="rbf", gamma=0.01)
 
-    print(tag_dict)
-    print(type(tag_dict['source_training_to']))
+    #print(tag_dict)
+    #print(type(tag_dict['source_training_to']))
 
-    training_df = data_df[(data_df['datetime'] > tag_dict['source_training_to']) &
-                          (data_df['datetime'] < tag_dict['source_training_from'])]
+    training_df = data_df[(data_df['datetime'] > training_from) &
+                          (data_df['datetime'] < training_to)]
 
     training_df = training_df.drop(columns=drop_list)
     training_df, normalizer = normalization(training_df)
