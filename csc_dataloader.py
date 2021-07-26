@@ -8,6 +8,8 @@ import datetime
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
+path = './data/W4/'
+
 
 def loader (source, target):
     logging.info(source+'_'+target+'_'+'data_loader')
