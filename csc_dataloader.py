@@ -32,6 +32,7 @@ def resample (data_1, data_2):
     #logging.info(source+'_'+target+'_'+'resample')
 
     shape_min, shape_max = get_shapes (data_1, data_2)
+    print('resample:', shape_min, shape_max)
     index = sorted(random.sample(range(0, shape_max), shape_min))
 
     if len(data_1) > len(data_2):
@@ -119,8 +120,6 @@ def normalization (normal_df):
 def scorer_(Y_pred):
     a = (Y_pred[Y_pred == -1].size)/(Y_pred.size)
     return a*100
-
-
 
 def labeler (data_df, training_from, training_to, end):
 
