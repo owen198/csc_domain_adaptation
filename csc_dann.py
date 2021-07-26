@@ -42,54 +42,67 @@ target_df = csc_dataloader.labeler(target_df,
 print(source_df.shape)
 print(target_df.shape)
 #print(tag_dict)
+data_df.drop(columns=drop_list)
+
+source_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
+                                                    source_df['label'])).batch(BATCH_SIZE*2)
+da_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
+                                                    source_df['label'], 
+                                                    target_df.drop(columns=['label']), 
+                                                    target_df['label'] )).batch(BATCH_SIZE)
+test_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
+                                                    source_df['label'])).batch(BATCH_SIZE*2) #Test Dataset over Target Domain
+test_dataset2 = tf.data.Dataset.from_tensor_slices((target_df.drop(columns=['label']), 
+                                                    target_df['label'])).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
 
 
-#Load MNIST Data (Source)
-(mnist_train_x, mnist_train_y), (mnist_test_x, mnist_test_y) = tf.keras.datasets.mnist.load_data()
+def def_mnist ():
+    #Load MNIST Data (Source)
+    (mnist_train_x, mnist_train_y), (mnist_test_x, mnist_test_y) = tf.keras.datasets.mnist.load_data()
 
-#Convert to 3 Channel and One_hot labels
-mnist_train_x, mnist_test_x = mnist_train_x.reshape((60000, 28, 28, 1)), mnist_test_x.reshape((10000, 28, 28, 1))
+    #Convert to 3 Channel and One_hot labels
+    mnist_train_x, mnist_test_x = mnist_train_x.reshape((60000, 28, 28, 1)), mnist_test_x.reshape((10000, 28, 28, 1))
 
-mnist_train_x, mnist_test_x = mnist_train_x / 255.0, mnist_test_x / 255.0
-mnist_train_x, mnist_test_x = mnist_train_x.astype('float32'), mnist_test_x.astype('float32')
+    mnist_train_x, mnist_test_x = mnist_train_x / 255.0, mnist_test_x / 255.0
+    mnist_train_x, mnist_test_x = mnist_train_x.astype('float32'), mnist_test_x.astype('float32')
 
-mnist_train_x = np.repeat(mnist_train_x, CHANNELS, axis=3)
-mnist_test_x = np.repeat(mnist_test_x, CHANNELS, axis=3)
+    mnist_train_x = np.repeat(mnist_train_x, CHANNELS, axis=3)
+    mnist_test_x = np.repeat(mnist_test_x, CHANNELS, axis=3)
 
-mnist_train_y = tf.one_hot(mnist_train_y, depth=10)
-mnist_test_y = tf.one_hot(mnist_test_y, depth=10)
+    mnist_train_y = tf.one_hot(mnist_train_y, depth=10)
+    mnist_test_y = tf.one_hot(mnist_test_y, depth=10)
 
-assert(mnist_train_x.shape == (60000,28,28,3))
-assert(mnist_test_x.shape == (10000,28,28,3))
-assert(mnist_train_y.shape == (60000,10))
-assert(mnist_test_y.shape == (10000,10))
-
-
-#Load MNIST-M [Target]
-
-with h5py.File(MNIST_M_PATH, 'r') as mnist_m:
-    mnist_m_train_x, mnist_m_test_x = mnist_m['train']['X'][()], mnist_m['test']['X'][()]
+    assert(mnist_train_x.shape == (60000,28,28,3))
+    assert(mnist_test_x.shape == (10000,28,28,3))
+    assert(mnist_train_y.shape == (60000,10))
+    assert(mnist_test_y.shape == (10000,10))
 
 
-mnist_m_train_x, mnist_m_test_x = mnist_m_train_x / 255.0, mnist_m_test_x / 255.0
-mnist_m_train_x, mnist_m_test_x = mnist_m_train_x.astype('float32'), mnist_m_test_x.astype('float32')
+    #Load MNIST-M [Target]
 
-mnist_m_train_y, mnist_m_test_y = mnist_train_y, mnist_test_y
-
-assert(mnist_m_train_x.shape == (60000,28,28,3))
-assert(mnist_m_test_x.shape == (10000,28,28,3))
-assert(mnist_m_train_y.shape == (60000,10))
-assert(mnist_m_test_y.shape == (10000,10))
+    with h5py.File(MNIST_M_PATH, 'r') as mnist_m:
+        mnist_m_train_x, mnist_m_test_x = mnist_m['train']['X'][()], mnist_m['test']['X'][()]
 
 
+    mnist_m_train_x, mnist_m_test_x = mnist_m_train_x / 255.0, mnist_m_test_x / 255.0
+    mnist_m_train_x, mnist_m_test_x = mnist_m_train_x.astype('float32'), mnist_m_test_x.astype('float32')
+
+    mnist_m_train_y, mnist_m_test_y = mnist_train_y, mnist_test_y
+
+    assert(mnist_m_train_x.shape == (60000,28,28,3))
+    assert(mnist_m_test_x.shape == (10000,28,28,3))
+    assert(mnist_m_train_y.shape == (60000,10))
+    assert(mnist_m_test_y.shape == (10000,10))
 
 
-#Prepare Datasets
 
-source_dataset = tf.data.Dataset.from_tensor_slices((mnist_train_x, mnist_train_y)).shuffle(1000).batch(BATCH_SIZE*2)
-da_dataset = tf.data.Dataset.from_tensor_slices((mnist_train_x, mnist_train_y, mnist_m_train_x, mnist_m_train_y)).shuffle(1000).batch(BATCH_SIZE)
-test_dataset = tf.data.Dataset.from_tensor_slices((mnist_m_test_x, mnist_m_test_y)).shuffle(1000).batch(BATCH_SIZE*2) #Test Dataset over Target Domain
-test_dataset2 = tf.data.Dataset.from_tensor_slices((mnist_m_train_x, mnist_m_train_y)).shuffle(1000).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
+
+    #Prepare Datasets
+
+    source_dataset = tf.data.Dataset.from_tensor_slices((mnist_train_x, mnist_train_y)).shuffle(1000).batch(BATCH_SIZE*2)
+    da_dataset = tf.data.Dataset.from_tensor_slices((mnist_train_x, mnist_train_y, mnist_m_train_x, mnist_m_train_y)).shuffle(1000).batch(BATCH_SIZE)
+    test_dataset = tf.data.Dataset.from_tensor_slices((mnist_m_test_x, mnist_m_test_y)).shuffle(1000).batch(BATCH_SIZE*2) #Test Dataset over Target Domain
+    test_dataset2 = tf.data.Dataset.from_tensor_slices((mnist_m_train_x, mnist_m_train_y)).shuffle(1000).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
 
 
 #Gradient Reversal Layer
@@ -116,14 +129,17 @@ class DANN(Model):
         super().__init__()
         
         #Feature Extractor
-        self.feature_extractor_layer0 = Conv2D(32, kernel_size=(3, 3), activation='relu')
-        self.feature_extractor_layer1 = BatchNormalization()
-        self.feature_extractor_layer2 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+        # self.feature_extractor_layer0 = Conv2D(32, kernel_size=(3, 3), activation='relu')
+        # self.feature_extractor_layer1 = BatchNormalization()
+        # self.feature_extractor_layer2 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
         
-        self.feature_extractor_layer3 = Conv2D(64, kernel_size=(5, 5), activation='relu')
-        self.feature_extractor_layer4 = Dropout(0.5)
-        self.feature_extractor_layer5 = BatchNormalization()
-        self.feature_extractor_layer6 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+        # self.feature_extractor_layer3 = Conv2D(64, kernel_size=(5, 5), activation='relu')
+        # self.feature_extractor_layer4 = Dropout(0.5)
+        # self.feature_extractor_layer5 = BatchNormalization()
+        # self.feature_extractor_layer6 = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+        self.feature_extractor_layer0 = Dense(200, activation='relu')
+        self.feature_extractor_layer1 = Dense(150, activation='relu')
+        self.feature_extractor_layer2 = Dense(100, activation='relu')
         
         #Label Predictor
         self.label_predictor_layer0 = Dense(100, activation='relu')
@@ -141,10 +157,10 @@ class DANN(Model):
         x = self.feature_extractor_layer1(x, training=train)
         x = self.feature_extractor_layer2(x)
         
-        x = self.feature_extractor_layer3(x)
-        x = self.feature_extractor_layer4(x, training=train)
-        x = self.feature_extractor_layer5(x, training=train)
-        x = self.feature_extractor_layer6(x)
+        #x = self.feature_extractor_layer3(x)
+        #x = self.feature_extractor_layer4(x, training=train)
+        #x = self.feature_extractor_layer5(x, training=train)
+        # = self.feature_extractor_layer6(x)
         
         feature = tf.reshape(x, [-1, 4 * 4 * 64])
         
