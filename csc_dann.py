@@ -42,19 +42,21 @@ target_df = csc_dataloader.labeler(target_df,
                                     tag_dict['target_training_to'],
                                     tag_dict['target_end'])
 
+target_y = tf.one_hot(target_df['label'], depth=2)
+source_y = tf.one_hot(source_df['label'], depth=2)
 #print(tag_dict)
 #data_df.drop(columns=drop_list)
 
 source_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
-                                                    source_df['label'])).batch(BATCH_SIZE*2)
+                                                     source_y)).batch(BATCH_SIZE*2)
 da_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
-                                                    source_df['label'], 
+                                                    source_y, 
                                                     target_df.drop(columns=['label']), 
-                                                    target_df['label'] )).batch(BATCH_SIZE)
+                                                    target_y )).batch(BATCH_SIZE)
 test_dataset = tf.data.Dataset.from_tensor_slices((source_df.drop(columns=['label']), 
                                                     source_df['label'])).batch(BATCH_SIZE*2) #Test Dataset over Target Domain
 test_dataset2 = tf.data.Dataset.from_tensor_slices((target_df.drop(columns=['label']), 
-                                                    target_df['label'])).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
+                                                    target_y)).batch(BATCH_SIZE*2) #Test Dataset over Target (used for training)
 
 
 def def_mnist ():
