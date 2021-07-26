@@ -105,7 +105,7 @@ def labeler (data_df, training_from, training_to, end):
     training_df, normalizer = normalization(training_df)
     predict_model = oneClass_predictor.fit(training_df)
 
-    #data_df['label'] = 0
+    data_df['label'] = 0
 
     #for index, row in training_df.iterrows():
     #    print(index, predict_model.predict(row))
@@ -127,6 +127,7 @@ def labeler (data_df, training_from, training_to, end):
         if len(validation_df) > 0:
         
             validation_df = validation_df.drop(columns=drop_list)
+            validation_df = validation_df.drop(columns=['label'])
             validation_df = normalizer.transform(validation_df)
             validation_df = predict_model.predict(validation_df)
 
