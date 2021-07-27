@@ -31,14 +31,19 @@ def resample (data_1, data_2):
 
     #logging.info(source+'_'+target+'_'+'resample')
     shape_min, shape_max = get_shapes (data_1, data_2)
-    index = sorted(random.sample(range(0, shape_max), shape_min))
+
+    shape_max = (shape_max//64)*64
+    shape_min = (shape_min//64)*64
+
+    index_minor = sorted(random.sample(range(0, shape_max), shape_min))
+    index_major = sorted(random.sample(range(0, shape_min), shape_min))
 
     if len(data_1) > len(data_2):
-        X = data_1.iloc[index]
-        Y = data_2
+        X = data_1.iloc[index_minor]
+        Y = data_2.iloc[index_major]
     else:
-        X = data_1
-        Y = data_2.iloc[index]
+        X = data_1.iloc[index_major]
+        Y = data_2.iloc[index_minor]
 
     return X, Y
 
