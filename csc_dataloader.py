@@ -107,7 +107,10 @@ def loader (source, target):
 
     globals()[tag_dict['source']], globals()[tag_dict['target']] = resample(globals()[tag_dict['source']], globals()[tag_dict['target']])
 
-    return globals()[tag_dict['source']], globals()[tag_dict['target']], tag_dict
+    source = globals()[tag_dict['source']].reset_index(drop=True)
+    target = globals()[tag_dict['target']].reset_index(drop=True)
+
+    return source, target, tag_dict
 
 def normalization (normal_df):
     
